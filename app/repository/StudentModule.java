@@ -61,9 +61,13 @@ public class StudentModule implements IModule<Student> {
     public CompletionStage<Optional<Boolean>> delete(String id) {
         return supplyAsync(() -> {
             try {
-                final Optional<Student> computerOptional = Optional.ofNullable(ebeanServer.find(Student.class).setId(id).findOne());
-                computerOptional.ifPresent(Model::delete);
-                return Optional.of(true);
+                final Optional<Student> student = Optional.ofNullable(ebeanServer.find(Student.class, id));
+                if (student.isPresent()){ //siempre me va a dar que esta presente, me tengo que fijar que no sea null
+                    ebeanServer.delete(student.get());
+                    return Optional.of(true);
+                } else {
+                    return Optional.of(false);
+                }
             } catch (Exception e) {
                 return Optional.of(false);
             }
