@@ -59,8 +59,7 @@ public class StudentModule implements IModule<Student> {
 
     @Override
     public CompletionStage<Optional<Boolean>> delete(String id) {
-        throw new NotImplementedException();
-        /*return supplyAsync(() -> {
+        return supplyAsync(() -> {
             try {
                 final Optional<Student> computerOptional = Optional.ofNullable(ebeanServer.find(Student.class).setId(id).findOne());
                 computerOptional.ifPresent(Model::delete);
@@ -68,7 +67,7 @@ public class StudentModule implements IModule<Student> {
             } catch (Exception e) {
                 return Optional.of(false);
             }
-        }, executionContext);*/
+        }, executionContext);
     }
 
     @Override
