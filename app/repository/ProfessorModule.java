@@ -2,6 +2,7 @@ package repository;
 
 import models.Professor;
 import io.ebean.Ebean;
+import io.ebean.Model;
 import io.ebean.EbeanServer;
 import play.db.ebean.EbeanConfig;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -31,7 +32,15 @@ public class ProfessorModule implements IModule<Professor>{
 
     @Override
     public CompletionStage<Optional<Boolean>> delete(String id) {
-        throw new NotImplementedException();
+        return supplyAsync(() -> {
+            try {
+                final Optional<Professor> computerOptional = Optional.ofNullable(ebeanServer.find(Professor.class).setId(id).findOne());
+                computerOptional.ifPresent(Model::delete);
+                return Optional.of(true);
+            } catch (Exception e) {
+                return Optional.of(false);
+            }
+        }, executionContext);
     }
 
     @Override
