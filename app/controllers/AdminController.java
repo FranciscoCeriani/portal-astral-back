@@ -29,4 +29,16 @@ public class AdminController extends Controller {
         }, executionContext.current());
     }
 
+    public CompletionStage<Result> deleteAdmin(String id){
+        return adminModule.delete(id).thenApplyAsync(data -> {
+            if(data.isPresent()){
+                if(data.get()){
+                    return status(200, "Deleted Correctly");
+                }
+            }
+            return status(404, "Admin not found");
+        }, executionContext.current());
+
+    }
+
 }
