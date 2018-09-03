@@ -33,7 +33,15 @@ public class AdminModule implements IModule<Admin>{
 
     @Override
     public CompletionStage<Optional<Boolean>> delete(String id) {
-        throw new NotImplementedException();
+          return supplyAsync(() -> {
+            try {
+                final Optional<Admin> computerOptional = Optional.ofNullable(ebeanServer.find(Admin.class).setId(id).findOne());
+                computerOptional.ifPresent(Model::delete);
+                return Optional.of(true);
+            } catch (Exception e) {
+                return Optional.of(false);
+            }
+        }, executionContext);
     }
 
     @Override
