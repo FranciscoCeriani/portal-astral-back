@@ -1,5 +1,6 @@
 package repository;
 
+import io.ebean.Transaction;
 import models.Professor;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
@@ -26,7 +27,26 @@ public class ProfessorModule implements IModule<Professor>{
 
     @Override
     public CompletionStage<Optional<Boolean>> update(String id, Professor entity) {
-        throw new NotImplementedException();
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Optional<Boolean> value = Optional.of(false);
+            try {
+                Professor professor = ebeanServer.find(Professor.class).setId(id).findOne();
+                if (professor != null) {
+                    professor.name = entity.name;
+                    professor.lastName = entity.lastName;
+                    professor.file = entity.file;
+                    professor.email = entity.email;
+                    professor.password = entity.password;
+                    professor.update();
+                    txn.commit();
+                    value = Optional.of(true);
+                }
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
     }
 
     @Override
