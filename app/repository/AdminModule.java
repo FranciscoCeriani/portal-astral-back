@@ -36,8 +36,12 @@ public class AdminModule implements IModule<Admin>{
           return supplyAsync(() -> {
             try {
                 final Optional<Admin> computerOptional = Optional.ofNullable(ebeanServer.find(Admin.class).setId(id).findOne());
-                computerOptional.ifPresent(Model::delete);
-                return Optional.of(true);
+                if(computerOptional.isPresent()){
+                    computerOptional.get().delete();
+                    return Optional.of(true);
+                }else{
+                    return Optional.of(false);
+                }
             } catch (Exception e) {
                 return Optional.of(false);
             }
