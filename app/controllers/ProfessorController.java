@@ -28,4 +28,15 @@ public class ProfessorController extends Controller {
             return status(201, data);
         }, executionContext.current());
     }
+
+    public CompletionStage<Result> deleteProfessor(String id) {
+        return professorModule.delete(id).thenApplyAsync(data -> {
+            // This is the HTTP rendering thread context
+            if(data.isPresent() && data.get()){
+                return ok();
+            }else{
+                return status(404, "Resource not found");
+            }
+        }, executionContext.current());
+    }
 }
