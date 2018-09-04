@@ -50,6 +50,20 @@ public class StudentController extends Controller {
         }, executionContext.current());
     }
 
+    public CompletionStage<Result> deleteStudent(String id){
 
+         return studentModule.delete(id).thenApplyAsync(data -> {
+            // This is the HTTP rendering thread context
+            if(data.isPresent()){
+                if (data.get()) {
+                    return ok();
+                } else {
+                    return status(404, "Resource not found");
+                }
+            }else{
+                return status(404, "Resource not found");
+            }
+        }, executionContext.current());
+    }
 
 }
