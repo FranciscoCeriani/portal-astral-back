@@ -19,8 +19,6 @@ GET     /subject/:id        controllers.SubjectController.getSubject(id :String)
 
 POST     /administrator      controllers.AdminController.saveAdmin
 
-POST    /professor          controllers.ProfessorController.saveProfesor
-
 
 
 # Map static resources from the /public folder to the /assets URL path
