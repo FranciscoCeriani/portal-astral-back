@@ -1,6 +1,6 @@
 # Portal Astral
 
-This an API to manage the subjets of an university.
+This is an API to manage the subjects of an university.
 
 ## Running
 
