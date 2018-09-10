@@ -9,6 +9,7 @@ import play.mvc.Result;
 import repository.AdminModule;
 
 import javax.inject.Inject;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 public class AdminController extends Controller {
@@ -27,6 +28,18 @@ public class AdminController extends Controller {
         return adminModule.insert(admin).thenApplyAsync(data -> {
             return status(201, data);
         }, executionContext.current());
+    }
+
+    public CompletionStage<Result> getAllAdmins() {
+        final CompletableFuture<Result> result = new CompletableFuture<>();
+        result.complete(status(501, "Method not implemented"));
+        return result;
+    }
+
+    public CompletionStage<Result> getAdmin(String id) {
+        final CompletableFuture<Result> result = new CompletableFuture<>();
+        result.complete(status(501, "Method not implemented"));
+        return result;
     }
 
     public CompletionStage<Result> deleteAdmin(String id){

@@ -9,6 +9,7 @@ import play.mvc.Result;
 import repository.ProfessorModule;
 
 import javax.inject.Inject;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 public class ProfessorController extends Controller {
@@ -27,6 +28,18 @@ public class ProfessorController extends Controller {
         return professorModule.insert(professor).thenApplyAsync(data -> {
             return status(201, data);
         }, executionContext.current());
+    }
+
+    public CompletionStage<Result> getAllProfessors() {
+        final CompletableFuture<Result> result = new CompletableFuture<>();
+        result.complete(status(501, "Method not implemented"));
+        return result;
+    }
+
+    public CompletionStage<Result> getProfessor(String id) {
+        final CompletableFuture<Result> result = new CompletableFuture<>();
+        result.complete(status(501, "Method not implemented"));
+        return result;
     }
 
     public CompletionStage<Result> deleteProfessor(String id) {

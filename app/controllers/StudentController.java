@@ -9,6 +9,7 @@ import play.mvc.Result;
 import repository.StudentModule;
 
 import javax.inject.Inject;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -48,6 +49,12 @@ public class StudentController extends Controller {
                 return status(404, "Resource not found");
             }
         }, executionContext.current());
+    }
+
+    public CompletionStage<Result> getAllStudents() {
+        final CompletableFuture<Result> result = new CompletableFuture<>();
+        result.complete(status(501, "Method not implemented"));
+        return result;
     }
 
     public CompletionStage<Result> deleteStudent(String id){
