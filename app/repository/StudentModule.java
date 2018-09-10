@@ -39,8 +39,7 @@ public class StudentModule implements IModule<Student> {
 
     @Override
     public CompletionStage<Optional<Boolean>> update(String id, Student entity) {
-        throw new NotImplementedException();
-        /*return supplyAsync(() -> {
+        return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             Optional<Boolean> value = Optional.of(false);
             try {
@@ -48,6 +47,13 @@ public class StudentModule implements IModule<Student> {
                 if (savedStudent != null) {
                     savedStudent.name = entity.name;
                     savedStudent.lastName = entity.lastName;
+                    savedStudent.file = entity.file;
+                    savedStudent.email = entity.email;
+                    savedStudent.password = entity.password;
+                    savedStudent.birthday = entity.birthday;
+                    savedStudent.identificationType = entity.identificationType;
+                    savedStudent.identification = entity.identification;
+                    savedStudent.address = entity.address;
                     savedStudent.update();
                     txn.commit();
                     value = Optional.of(true);
@@ -56,7 +62,7 @@ public class StudentModule implements IModule<Student> {
                 txn.end();
             }
             return value;
-        }, executionContext);*/
+        }, executionContext);
     }
 
     @Override

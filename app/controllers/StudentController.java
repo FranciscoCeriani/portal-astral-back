@@ -30,12 +30,23 @@ public class StudentController extends Controller {
 
 
     public CompletionStage<Result> saveStudent() {
-
         JsonNode json = request().body().asJson();
         Student realStudent = Json.fromJson(json, Student.class);
         return studentModule.insert(realStudent).thenApplyAsync(data -> {
             // This is the HTTP rendering thread context
             return status(201, data);
+        }, executionContext.current());
+    }
+
+    public CompletionStage<Result> updateStudent(String id) {
+        JsonNode jsonNode = request().body().asJson();
+        Student student = Json.fromJson(jsonNode, Student.class);
+        return studentModule.update(id, student).thenApplyAsync(data -> {
+            if (data.get()) {
+                return ok("Student updated");
+            } else {
+                return status(404, "Student to be updated not found");
+            }
         }, executionContext.current());
     }
 
@@ -70,7 +81,7 @@ public class StudentController extends Controller {
             // This is the HTTP rendering thread context
             if(data.isPresent()){
                 if (data.get()) {
-                    return ok();
+                    return ok("Student deleted");
                 } else {
                     return status(404, "Resource not found");
                 }
