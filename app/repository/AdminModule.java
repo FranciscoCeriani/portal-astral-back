@@ -5,6 +5,7 @@ import io.ebean.EbeanServer;
 import io.ebean.Model;
 import io.ebean.Transaction;
 import models.Admin;
+import org.springframework.beans.BeanUtils;
 import play.db.ebean.EbeanConfig;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -28,7 +29,22 @@ public class AdminModule implements IModule<Admin>{
 
     @Override
     public CompletionStage<Optional<Boolean>> update(String id, Admin entity) {
-        throw new NotImplementedException();
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Optional<Boolean> value = Optional.of(false);
+            try {
+                Admin savedAdmin = ebeanServer.find(Admin.class).setId(id).findOne();
+                if (savedAdmin != null) {
+                    BeanUtils.copyProperties(entity, savedAdmin);
+                    savedAdmin.update();
+                    txn.commit();
+                    value = Optional.of(true);
+                }
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
     }
 
     @Override

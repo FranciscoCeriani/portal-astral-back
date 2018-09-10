@@ -54,4 +54,12 @@ public class AdminController extends Controller {
 
     }
 
+    public CompletionStage<Result> updateAdmin(String id) {
+        JsonNode jsonNode = request().body().asJson();
+        Admin admin = Json.fromJson(jsonNode, Admin.class);
+        return adminModule.update(id, admin).thenApplyAsync(data -> {
+            return status(201, "Updated successfully");
+        }, executionContext.current());
+    }
+
 }
