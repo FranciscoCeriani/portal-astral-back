@@ -9,6 +9,8 @@ import play.db.ebean.EbeanConfig;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletionStage;
@@ -80,6 +82,24 @@ public class StudentModule implements IModule<Student> {
                 Student savedStudent = ebeanServer.find(Student.class).setId(id).findOne();
                 if (savedStudent != null) {
                     value = Optional.of(savedStudent);
+                }
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
+    }
+
+    public CompletionStage<Optional<List<Student>>> getAll() {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Optional<List<Student>> value = Optional.empty();
+            try {
+
+                List<Student> studentList = ebeanServer.find(Student.class).findList();
+                if(!studentList.isEmpty()){
+                    value = Optional.of(studentList);
+
                 }
             } finally {
                 txn.end();
