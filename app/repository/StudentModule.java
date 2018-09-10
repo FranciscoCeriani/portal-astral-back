@@ -73,8 +73,7 @@ public class StudentModule implements IModule<Student> {
 
     @Override
     public CompletionStage<Optional<Student>> get(String id) {
-        throw new NotImplementedException();
-        /*return supplyAsync(() -> {
+        return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             Optional<Student> value = Optional.empty();
             try {
@@ -86,6 +85,6 @@ public class StudentModule implements IModule<Student> {
                 txn.end();
             }
             return value;
-        }, executionContext);*/
+        }, executionContext);
     }
 }
