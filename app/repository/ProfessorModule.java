@@ -93,7 +93,21 @@ public class ProfessorModule implements IModule<Professor>{
     }
 
     public CompletionStage<Optional<List<Professor>>> getAll() {
-        throw new NotImplementedException();
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Optional<List<Professor>> value = Optional.empty();
+            try {
+
+                List<Professor> professorList = ebeanServer.find(Professor.class).findList();
+                if(!professorList.isEmpty()){
+                    value = Optional.of(professorList);
+
+                }
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
     }
 
 }
