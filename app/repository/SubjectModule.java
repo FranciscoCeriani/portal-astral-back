@@ -8,9 +8,11 @@ import models.Student;
 import models.Subject;
 import play.db.ebean.EbeanConfig;
 import play.libs.Json;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletionStage;
@@ -88,6 +90,10 @@ public class SubjectModule implements IModule<Subject>{
             }
             return value;
         }, executionContext);
+    }
+
+    public CompletionStage<Optional<List<Subject>>> getAll() {
+        throw new NotImplementedException();
     }
 
     public CompletionStage<Optional<Subject>> addStudentToSubject(Student student, String subjectID) {
