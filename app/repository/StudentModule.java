@@ -9,6 +9,8 @@ import play.db.ebean.EbeanConfig;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletionStage;
@@ -76,8 +78,7 @@ public class StudentModule implements IModule<Student> {
 
     @Override
     public CompletionStage<Optional<Student>> get(String id) {
-        throw new NotImplementedException();
-        /*return supplyAsync(() -> {
+        return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             Optional<Student> value = Optional.empty();
             try {
@@ -89,6 +90,24 @@ public class StudentModule implements IModule<Student> {
                 txn.end();
             }
             return value;
-        }, executionContext);*/
+        }, executionContext);
+    }
+
+    public CompletionStage<Optional<List<Student>>> getAll() {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Optional<List<Student>> value = Optional.empty();
+            try {
+
+                List<Student> studentList = ebeanServer.find(Student.class).findList();
+                if(!studentList.isEmpty()){
+                    value = Optional.of(studentList);
+
+                }
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
     }
 }
