@@ -24,6 +24,7 @@ POST     /administrator      controllers.AdminController.saveAdmin
 GET     /administrator      controllers.AdminController.getAllAdmins
 GET     /administrator/:id      controllers.AdminController.getAdmin(id: String)
 DELETE /administrator/:id        controllers.AdminController.deleteAdmin(id: String)
+PUT     /administrator/:id      controllers.AdminController.updateAdmin(id: String)
 
 POST    /professor          controllers.ProfessorController.saveProfessor
 GET    /professor          controllers.ProfessorController.getAllProfessors
