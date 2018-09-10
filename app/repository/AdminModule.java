@@ -9,6 +9,7 @@ import play.db.ebean.EbeanConfig;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletionStage;
@@ -66,6 +67,22 @@ public class AdminModule implements IModule<Admin>{
                 Admin savedAdmin = ebeanServer.find(Admin.class).setId(id).findOne();
                 if (savedAdmin != null) {
                     value = Optional.of(savedAdmin);
+                }
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
+    }
+
+    public CompletionStage<Optional<List<Admin>>> getAll() {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Optional<List<Admin>> value = Optional.empty();
+            try {
+                List<Admin> savedAdmins = ebeanServer.find(Admin.class).findList();
+                if (!savedAdmins.isEmpty()) {
+                    value = Optional.of(savedAdmins);
                 }
             } finally {
                 txn.end();
