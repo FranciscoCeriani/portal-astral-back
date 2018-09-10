@@ -5,10 +5,12 @@ import io.ebean.EbeanServer;
 import io.ebean.Model;
 import io.ebean.Transaction;
 import models.Admin;
+import org.springframework.beans.BeanUtils;
 import play.db.ebean.EbeanConfig;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletionStage;
@@ -28,7 +30,22 @@ public class AdminModule implements IModule<Admin>{
 
     @Override
     public CompletionStage<Optional<Boolean>> update(String id, Admin entity) {
-        throw new NotImplementedException();
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Optional<Boolean> value = Optional.of(false);
+            try {
+                Admin savedAdmin = ebeanServer.find(Admin.class).setId(id).findOne();
+                if (savedAdmin != null) {
+                    BeanUtils.copyProperties(entity, savedAdmin);
+                    savedAdmin.update();
+                    txn.commit();
+                    value = Optional.of(true);
+                }
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
     }
 
     @Override
@@ -66,6 +83,22 @@ public class AdminModule implements IModule<Admin>{
                 Admin savedAdmin = ebeanServer.find(Admin.class).setId(id).findOne();
                 if (savedAdmin != null) {
                     value = Optional.of(savedAdmin);
+                }
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
+    }
+
+    public CompletionStage<Optional<List<Admin>>> getAll() {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Optional<List<Admin>> value = Optional.empty();
+            try {
+                List<Admin> savedAdmins = ebeanServer.find(Admin.class).findList();
+                if (!savedAdmins.isEmpty()) {
+                    value = Optional.of(savedAdmins);
                 }
             } finally {
                 txn.end();

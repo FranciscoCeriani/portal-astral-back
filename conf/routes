@@ -3,36 +3,36 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET           /                         controllers.HomeController.index
+GET     /                           controllers.HomeController.index
 # An example controller showing how to use dependency injection
-GET           /count                    controllers.CountController.count
+GET     /count                      controllers.CountController.count
 # An example controller showing how to write asynchronous code
-GET           /message                  controllers.AsyncController.message
+GET     /message                    controllers.AsyncController.message
 
-POST          /student                  controllers.StudentController.saveStudent
-GET           /student                  controllers.StudentController.getAllStudents
-GET           /student/:id              controllers.StudentController.getStudent(id: String)
-DELETE        /student/:id              controllers.StudentController.deleteStudent(id: String)
+POST     /student           controllers.StudentController.saveStudent
+GET     /student           controllers.StudentController.getAllStudents
+GET     /student/:id        controllers.StudentController.getStudent(id: String)
+DELETE  /student/:id        controllers.StudentController.deleteStudent(id: String)
 
-POST          /subject                  controllers.SubjectController.saveSubject
-POST          /subject/:id              controllers.SubjectController.saveStudentToSubject(id :String)
-GET           /subject                  controllers.SubjectController.getSubject(id :String)
-GET           /subject/:id              controllers.SubjectController.getSubject(id :String)
+POST    /subject            controllers.SubjectController.saveSubject
+POST    /subject/:id        controllers.SubjectController.saveStudentToSubject(id :String)
+GET     /subject        controllers.SubjectController.getSubject(id :String)
+GET     /subject/:id        controllers.SubjectController.getSubject(id :String)
 
 
-POST          /administrator            controllers.AdminController.saveAdmin
-GET           /administrator            controllers.AdminController.getAllAdmins
-GET           /administrator/:id        controllers.AdminController.getAdmin(id: String)
-DELETE        /administrator/:id        controllers.AdminController.deleteAdmin(id: String)
+POST     /administrator      controllers.AdminController.saveAdmin
+GET     /administrator      controllers.AdminController.getAllAdmins
+GET     /administrator/:id      controllers.AdminController.getAdmin(id: String)
+DELETE /administrator/:id        controllers.AdminController.deleteAdmin(id: String)
+PUT     /administrator/:id      controllers.AdminController.updateAdmin(id: String)
 
-POST          /professor                controllers.ProfessorController.saveProfessor
-GET           /professor                controllers.ProfessorController.getAllProfessors
-GET           /professor/:id            controllers.ProfessorController.getProfessor(id: String)
-DELETE        /professor/:id            controllers.ProfessorController.deleteProfessor(id: String)
-PUT           /professor/:id            controllers.ProfessorController.updateProfessor(id: String)
+POST    /professor          controllers.ProfessorController.saveProfessor
+GET    /professor          controllers.ProfessorController.getAllProfessors
+GET    /professor/:id         controllers.ProfessorController.getProfessor(id: String)
+DELETE  /professor/:id      controllers.ProfessorController.deleteProfessor(id: String)
 
 # Map static resources from the /public folder to the /assets URL path
-GET           /assets/*file             controllers.Assets.versioned(path="/public", file: Asset)
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
 
 
