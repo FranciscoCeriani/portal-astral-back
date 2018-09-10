@@ -76,7 +76,19 @@ public class ProfessorModule implements IModule<Professor>{
 
     @Override
     public CompletionStage<Optional<Professor>> get(String id) {
-        throw new NotImplementedException();
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Optional<Professor> value = Optional.empty();
+            try {
+                Professor professor = ebeanServer.find(Professor.class).setId(id).findOne();
+                if (professor != null) {
+                    value = Optional.of(professor);
+                }
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
     }
 
 }
