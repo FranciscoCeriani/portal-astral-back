@@ -58,7 +58,12 @@ public class AdminController extends Controller {
         JsonNode jsonNode = request().body().asJson();
         Admin admin = Json.fromJson(jsonNode, Admin.class);
         return adminModule.update(id, admin).thenApplyAsync(data -> {
-            return status(201, "Updated successfully");
+            if (data.isPresent()){
+                if(data.get()){
+                    return status(201, "Updated successfully");
+                }
+            }
+            return status(404, "Admin not found");
         }, executionContext.current());
     }
 
