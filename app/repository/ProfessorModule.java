@@ -8,6 +8,7 @@ import play.db.ebean.EbeanConfig;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletionStage;
@@ -76,6 +77,10 @@ public class ProfessorModule implements IModule<Professor>{
 
     @Override
     public CompletionStage<Optional<Professor>> get(String id) {
+        throw new NotImplementedException();
+    }
+
+    public CompletionStage<Optional<List<Professor>>> getAll() {
         throw new NotImplementedException();
     }
 
