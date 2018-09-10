@@ -59,6 +59,18 @@ public class AdminModule implements IModule<Admin>{
 
     @Override
     public CompletionStage<Optional<Admin>> get(String id) {
-        throw new NotImplementedException();
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Optional<Admin> value = Optional.empty();
+            try {
+                Admin savedAdmin = ebeanServer.find(Admin.class).setId(id).findOne();
+                if (savedAdmin != null) {
+                    value = Optional.of(savedAdmin);
+                }
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
     }
 }
