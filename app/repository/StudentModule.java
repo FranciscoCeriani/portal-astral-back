@@ -5,6 +5,7 @@ import io.ebean.EbeanServer;
 import io.ebean.Model;
 import io.ebean.Transaction;
 import models.Student;
+import org.springframework.beans.BeanUtils;
 import play.db.ebean.EbeanConfig;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -45,15 +46,7 @@ public class StudentModule implements IModule<Student> {
             try {
                 Student savedStudent = ebeanServer.find(Student.class).setId(id).findOne();
                 if (savedStudent != null) {
-                    savedStudent.name = entity.name;
-                    savedStudent.lastName = entity.lastName;
-                    savedStudent.file = entity.file;
-                    savedStudent.email = entity.email;
-                    savedStudent.password = entity.password;
-                    savedStudent.birthday = entity.birthday;
-                    savedStudent.identificationType = entity.identificationType;
-                    savedStudent.identification = entity.identification;
-                    savedStudent.address = entity.address;
+                    BeanUtils.copyProperties(entity, savedStudent);
                     savedStudent.update();
                     txn.commit();
                     value = Optional.of(true);
