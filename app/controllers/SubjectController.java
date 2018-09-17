@@ -67,4 +67,16 @@ public class SubjectController extends Controller {
             }
         }, executionContext.current());
     }
+
+    public CompletionStage<Result> updateSubject(String id) {
+        JsonNode jsonNode = request().body().asJson();
+        Subject subject = Json.fromJson(jsonNode, Subject.class);
+        return subjectModule.update(id, subject).thenApplyAsync(data -> {
+            if (data.get()) {
+                return status(200, "Professor update");
+            } else {
+                return status(400, "Resources not found");
+            }
+        }, executionContext.current());
+    }
 }
