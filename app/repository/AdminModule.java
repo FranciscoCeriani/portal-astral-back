@@ -36,6 +36,7 @@ public class AdminModule implements IModule<Admin>{
             try {
                 Admin savedAdmin = ebeanServer.find(Admin.class).setId(id).findOne();
                 if (savedAdmin != null) {
+                    entity.id = id;
                     BeanUtils.copyProperties(entity, savedAdmin);
                     savedAdmin.update();
                     txn.commit();
