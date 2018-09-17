@@ -10,6 +10,7 @@ import play.db.ebean.EbeanConfig;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -92,15 +93,13 @@ public class AdminModule implements IModule<Admin>{
         }, executionContext);
     }
 
-    public CompletionStage<Optional<List<Admin>>> getAll() {
+    public CompletionStage<List<Admin>> getAll() {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
-            Optional<List<Admin>> value = Optional.empty();
+            List<Admin> value;
             try {
                 List<Admin> savedAdmins = ebeanServer.find(Admin.class).findList();
-                if (!savedAdmins.isEmpty()) {
-                    value = Optional.of(savedAdmins);
-                }
+                value = savedAdmins;
             } finally {
                 txn.end();
             }

@@ -116,7 +116,7 @@ public class SubjectModule implements IModule<Subject>{
         }, executionContext);
     }
 
-    public CompletionStage<Optional<List<Subject>>> getAll() {
+    public CompletionStage<List<Subject>> getAll() {
         throw new NotImplementedException();
     }
 

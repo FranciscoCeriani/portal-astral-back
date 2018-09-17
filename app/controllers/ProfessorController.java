@@ -46,12 +46,7 @@ public class ProfessorController extends Controller {
     public CompletionStage<Result> getAllProfessors() {
         return professorModule.getAll().thenApplyAsync(data -> {
             // This is the HTTP rendering thread context
-            if(data.isPresent()){
-                List<Professor> professorList = data.get();
-                return ok(Json.toJson(professorList));
-            }else{
-                return status(404, "Resource not found");
-            }
+                return ok(Json.toJson(data));
         }, executionContext.current());
     }
 

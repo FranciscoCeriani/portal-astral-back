@@ -67,12 +67,7 @@ public class StudentController extends Controller {
     public CompletionStage<Result> getAllStudents() {
         return studentModule.getAll().thenApplyAsync(data -> {
             // This is the HTTP rendering thread context
-            if(data.isPresent()){
-                List<Student> studentList = data.get();
-                return ok(Json.toJson(studentList));
-            }else{
-                return status(404, "Resource not found");
-            }
+                return ok(Json.toJson(data));
         }, executionContext.current());
     }
 

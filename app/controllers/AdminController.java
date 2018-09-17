@@ -33,12 +33,7 @@ public class AdminController extends Controller {
 
     public CompletionStage<Result> getAllAdmins() {
         return adminModule.getAll().thenApplyAsync(data -> {
-            if (data.isPresent()) {
-                List<Admin> admins = data.get();
-                return ok(Json.toJson(admins));
-            } else {
-                return status(404, "No admin found");
-            }
+                return ok(Json.toJson(data));
         }, executionContext.current());
     }
 

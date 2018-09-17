@@ -16,5 +16,5 @@ public interface IModule<T> {
 
     CompletionStage<Optional<T>> get(String id);
 
-    CompletionStage<Optional<List<T>>> getAll();
+    CompletionStage<List<T>> getAll();
 }

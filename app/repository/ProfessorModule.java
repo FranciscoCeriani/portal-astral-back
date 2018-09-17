@@ -8,6 +8,7 @@ import play.db.ebean.EbeanConfig;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -92,17 +93,14 @@ public class ProfessorModule implements IModule<Professor>{
         }, executionContext);
     }
 
-    public CompletionStage<Optional<List<Professor>>> getAll() {
+    public CompletionStage<List<Professor>> getAll() {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
-            Optional<List<Professor>> value = Optional.empty();
+            List<Professor> value;
             try {
 
                 List<Professor> professorList = ebeanServer.find(Professor.class).findList();
-                if(!professorList.isEmpty()){
-                    value = Optional.of(professorList);
-
-                }
+                value = professorList;
             } finally {
                 txn.end();
             }

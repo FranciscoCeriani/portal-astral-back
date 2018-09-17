@@ -93,17 +93,14 @@ public class StudentModule implements IModule<Student> {
         }, executionContext);
     }
 
-    public CompletionStage<Optional<List<Student>>> getAll() {
+    public CompletionStage<List<Student>> getAll() {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
-            Optional<List<Student>> value = Optional.empty();
+            List<Student> value;
             try {
 
                 List<Student> studentList = ebeanServer.find(Student.class).findList();
-                if(!studentList.isEmpty()){
-                    value = Optional.of(studentList);
-
-                }
+                value = studentList;
             } finally {
                 txn.end();
             }
