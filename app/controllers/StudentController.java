@@ -45,8 +45,6 @@ public class StudentController extends Controller {
             if (data.isPresent()) {
                 if (data.get()) {
                     return ok("Student updated");
-                } else {
-                    return status(404, "Student to be updated not found");
                 }
             }
             return status(404, "Student to be updated not found");

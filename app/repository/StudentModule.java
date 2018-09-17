@@ -46,6 +46,7 @@ public class StudentModule implements IModule<Student> {
             try {
                 Student savedStudent = ebeanServer.find(Student.class).setId(id).findOne();
                 if (savedStudent != null) {
+                    entity.id = id;
                     BeanUtils.copyProperties(entity, savedStudent);
                     savedStudent.update();
                     txn.commit();
