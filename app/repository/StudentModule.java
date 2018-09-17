@@ -5,6 +5,7 @@ import io.ebean.EbeanServer;
 import io.ebean.Model;
 import io.ebean.Transaction;
 import models.Student;
+import org.springframework.beans.BeanUtils;
 import play.db.ebean.EbeanConfig;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -39,15 +40,14 @@ public class StudentModule implements IModule<Student> {
 
     @Override
     public CompletionStage<Optional<Boolean>> update(String id, Student entity) {
-        throw new NotImplementedException();
-        /*return supplyAsync(() -> {
+        return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             Optional<Boolean> value = Optional.of(false);
             try {
                 Student savedStudent = ebeanServer.find(Student.class).setId(id).findOne();
                 if (savedStudent != null) {
-                    savedStudent.name = entity.name;
-                    savedStudent.lastName = entity.lastName;
+                    entity.id = id;
+                    BeanUtils.copyProperties(entity, savedStudent);
                     savedStudent.update();
                     txn.commit();
                     value = Optional.of(true);
@@ -56,7 +56,7 @@ public class StudentModule implements IModule<Student> {
                 txn.end();
             }
             return value;
-        }, executionContext);*/
+        }, executionContext);
     }
 
     @Override
