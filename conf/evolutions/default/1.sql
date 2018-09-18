@@ -39,6 +39,7 @@ create table student (
 create table subject (
   id                            varchar(255) not null,
   subject_name                  varchar(255),
+  career_year                   integer not null,
   constraint pk_subject primary key (id)
 );
 

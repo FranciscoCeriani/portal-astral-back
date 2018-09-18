@@ -27,6 +27,8 @@ GET    /professor/:id         controllers.ProfessorController.getProfessor(id: S
 DELETE  /professor/:id      controllers.ProfessorController.deleteProfessor(id: String)
 PUT     /professor/:id      controllers.ProfessorController.updateProfessor(id: String)
 
+POST    /subject          controllers.SubjectController.saveSubject
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
