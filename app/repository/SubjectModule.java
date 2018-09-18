@@ -7,7 +7,6 @@ import io.ebean.Transaction;
 import models.Student;
 import models.Subject;
 import play.db.ebean.EbeanConfig;
-import play.libs.Json;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.inject.Inject;
@@ -73,10 +72,35 @@ public class SubjectModule implements IModule<Subject>{
     @Override
     public CompletionStage<String> insert(Subject entity) {
         return supplyAsync(() -> {
-            entity.id = UUID.randomUUID().toString();
-            ebeanServer.insert(entity);
-            return entity.id;
+            Subject subjectInDatabase = ebeanServer.find(Subject.class)
+                    .where().eq("subjectName", entity.subjectName).eq("careerYear", entity.careerYear)
+                    .findOne();
+            if (subjectInDatabase == null) {
+                if (checkRequiredSubjects(entity)) {
+                    entity.id = UUID.randomUUID().toString();
+                    ebeanServer.insert(entity);
+                    return entity.id;
+                } else {
+                    return "Required subject does not exist";
+                }
+            } else {
+                return "Subject exists";
+            }
         }, executionContext);
+    }
+
+    private boolean checkRequiredSubjects(Subject subject) {
+        Subject subjectToTest;
+        List<String> subjects = subject.requiredSubjects;
+        for (String id : subjects) {
+            subjectToTest = ebeanServer.find(Subject.class)
+                    .where().eq("id", id)
+                    .findOne();
+            if (subjectToTest == null) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

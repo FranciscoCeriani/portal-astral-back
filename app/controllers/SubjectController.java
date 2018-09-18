@@ -11,6 +11,7 @@ import repository.StudentModule;
 import repository.SubjectModule;
 
 import javax.inject.Inject;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -32,11 +33,15 @@ public class SubjectController extends Controller {
 
 
     public CompletionStage<Result> saveSubject() {
-
         JsonNode json = request().body().asJson();
-        Subject realSubject = Json.fromJson(json, Subject.class);
-        return subjectModule.insert(realSubject).thenApplyAsync(data -> {
+        Subject subject = Json.fromJson(json, Subject.class);
+        return subjectModule.insert(subject).thenApplyAsync(data -> {
             // This is the HTTP rendering thread context
+            if (data.equals("Subject exists")){
+                return status(403, "Subject already exists");
+            } else if (data.equals("Required subject does not exist")){
+                return status(400, "Required subject does not exist");
+            }
             return status(201, data);
         }, executionContext.current());
     }
