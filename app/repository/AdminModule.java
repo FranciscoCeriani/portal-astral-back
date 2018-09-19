@@ -1,13 +1,15 @@
 package repository;
 
+import io.ebean.DuplicateKeyException;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
-import io.ebean.Model;
 import io.ebean.Transaction;
 import models.Admin;
 import org.springframework.beans.BeanUtils;
 import play.db.ebean.EbeanConfig;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import scala.util.Failure;
+import scala.util.Success;
+import scala.util.Try;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -67,11 +69,15 @@ public class AdminModule implements IModule<Admin>{
     }
 
     @Override
-    public CompletionStage<String> insert(Admin entity) {
+    public CompletionStage<Try<String>> insert(Admin entity) {
         return supplyAsync(() -> {
-            entity.id = UUID.randomUUID().toString();
-            ebeanServer.insert(entity);
-            return entity.id;
+            try {
+                entity.id = UUID.randomUUID().toString();
+                ebeanServer.insert(entity);
+                return new Success(entity.id);
+            }catch (DuplicateKeyException e){
+                return new Failure(new Exception("Email already exists"));
+            }
         }, executionContext);
     }
 
@@ -92,15 +98,13 @@ public class AdminModule implements IModule<Admin>{
         }, executionContext);
     }
 
-    public CompletionStage<Optional<List<Admin>>> getAll() {
+    public CompletionStage<List<Admin>> getAll() {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
-            Optional<List<Admin>> value = Optional.empty();
+            List<Admin> value;
             try {
                 List<Admin> savedAdmins = ebeanServer.find(Admin.class).findList();
-                if (!savedAdmins.isEmpty()) {
-                    value = Optional.of(savedAdmins);
-                }
+                value = savedAdmins;
             } finally {
                 txn.end();
             }

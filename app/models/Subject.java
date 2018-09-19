@@ -4,30 +4,37 @@ import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.validation.Constraint;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Subject extends BaseModel {
+public class Subject extends BaseModel{
 
     @Constraints.Required
     public String subjectName;
 
+    @Constraints.Required
+    public int careerYear;
+
+    @Constraints.Required
+    public List<String> requiredSubjects;
+
     @ManyToMany
     public List<Student> students;
 
-    public List<Subject> requiredSubjects;
-
-    public Subject() {
+    public Subject(){
         subjectName = "";
-        students = new ArrayList<>();
+        careerYear = 0;
         requiredSubjects = new ArrayList<>();
+        students = new ArrayList<>();
     }
 
-    public Subject(String subjectName, ArrayList<Student> students, ArrayList<Subject> requiredSubjects) {
+    public Subject(String subjectName, int careerYear, ArrayList<String> requiredSubjects, ArrayList<Student> students){
         this.subjectName = subjectName;
-        this.students = students;
+        this.careerYear = careerYear;
         this.requiredSubjects = requiredSubjects;
+        this.students = students;
     }
 
 }

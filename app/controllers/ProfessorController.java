@@ -7,10 +7,9 @@ import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Result;
 import repository.ProfessorModule;
-
+import scala.util.Failure;
+import scala.util.Success;
 import javax.inject.Inject;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 public class ProfessorController extends Controller {
@@ -27,7 +26,12 @@ public class ProfessorController extends Controller {
         JsonNode jsonNode = request().body().asJson();
         Professor professor = Json.fromJson(jsonNode, Professor.class);
         return professorModule.insert(professor).thenApplyAsync(data -> {
-            return status(201, data);
+            if(data.isSuccess()) {
+                return status(201, data.get());
+            }
+            else {
+                return status(409, ((Failure)data).exception().getMessage());
+            }
         }, executionContext.current());
     }
 
@@ -46,12 +50,7 @@ public class ProfessorController extends Controller {
     public CompletionStage<Result> getAllProfessors() {
         return professorModule.getAll().thenApplyAsync(data -> {
             // This is the HTTP rendering thread context
-            if(data.isPresent()){
-                List<Professor> professorList = data.get();
-                return ok(Json.toJson(professorList));
-            }else{
-                return status(404, "Resource not found");
-            }
+                return ok(Json.toJson(data));
         }, executionContext.current());
     }
 
