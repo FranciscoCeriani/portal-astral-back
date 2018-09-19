@@ -13,6 +13,7 @@ POST    /subject            controllers.SubjectController.saveSubject
 POST    /subject/:id        controllers.SubjectController.saveStudentToSubject(id :String)
 GET     /subject        controllers.SubjectController.getSubject(id :String)
 GET     /subject/:id        controllers.SubjectController.getSubject(id :String)
+DELETE  /subject/:id        controllers.SubjectController.deleteSubject(id :String)
 
 
 POST     /administrator      controllers.AdminController.saveAdmin

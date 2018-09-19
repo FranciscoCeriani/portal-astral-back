@@ -69,7 +69,7 @@ public class StudentModule implements IModule<Student> {
         return supplyAsync(() -> {
             try {
                 final Optional<Student> student = Optional.ofNullable(ebeanServer.find(Student.class, id));
-                if (student.isPresent()){ //siempre me va a dar que esta presente, me tengo que fijar que no sea null
+                if (student.isPresent()){
                     ebeanServer.delete(student.get());
                     return Optional.of(true);
                 } else {

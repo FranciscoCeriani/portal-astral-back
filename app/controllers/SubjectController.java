@@ -72,4 +72,15 @@ public class SubjectController extends Controller {
             }
         }, executionContext.current());
     }
+
+    public CompletionStage<Result> deleteSubject(String id) {
+        return subjectModule.delete(id).thenApplyAsync(data -> {
+            // This is the HTTP rendering thread context
+            if (data.isPresent() && data.get()) {
+                return status(200, id);
+            } else {
+                return status(404, "Subject not found");
+            }
+        }, executionContext.current());
+    }
 }

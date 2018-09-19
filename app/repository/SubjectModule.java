@@ -58,9 +58,13 @@ public class SubjectModule implements IModule<Subject> {
     public CompletionStage<Optional<Boolean>> delete(String id) {
         return supplyAsync(() -> {
             try {
-                final Optional<Subject> computerOptional = Optional.ofNullable(ebeanServer.find(Subject.class).setId(id).findOne());
-                computerOptional.ifPresent(Model::delete);
-                return Optional.of(true);
+                final Optional<Subject> subject = Optional.ofNullable(ebeanServer.find(Subject.class, id));
+                if (subject.isPresent()){
+                    ebeanServer.delete(subject.get());
+                    return Optional.of(true);
+                } else {
+                    return Optional.of(false);
+                }
             } catch (Exception e) {
                 return Optional.of(false);
             }
