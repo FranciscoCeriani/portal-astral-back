@@ -7,6 +7,7 @@ import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Result;
 import repository.StudentModule;
+import scala.util.Failure;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -33,8 +34,12 @@ public class StudentController extends Controller {
         JsonNode json = request().body().asJson();
         Student realStudent = Json.fromJson(json, Student.class);
         return studentModule.insert(realStudent).thenApplyAsync(data -> {
-            // This is the HTTP rendering thread context
-            return status(201, data);
+            if(data.isSuccess()) {
+                return status(201, data.get());
+            }
+            else {
+                return status(409, ((Failure)data).exception().getMessage());
+            }
         }, executionContext.current());
     }
 

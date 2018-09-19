@@ -7,6 +7,7 @@ import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Result;
 import repository.AdminModule;
+import scala.util.Failure;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -27,7 +28,12 @@ public class AdminController extends Controller {
         JsonNode jsonNode = request().body().asJson();
         Admin admin = Json.fromJson(jsonNode, Admin.class);
         return adminModule.insert(admin).thenApplyAsync(data -> {
-            return status(201, data);
+            if(data.isSuccess()) {
+                return status(201, data.get());
+            }
+            else {
+                return status(409, ((Failure)data).exception().getMessage());
+            }
         }, executionContext.current());
     }
 

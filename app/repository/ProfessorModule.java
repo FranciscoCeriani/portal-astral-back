@@ -1,14 +1,16 @@
 package repository;
 
+import io.ebean.DuplicateKeyException;
 import io.ebean.Transaction;
 import models.Professor;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import play.db.ebean.EbeanConfig;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import scala.util.Failure;
+import scala.util.Success;
+import scala.util.Try;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -68,11 +70,15 @@ public class ProfessorModule implements IModule<Professor>{
     }
 
     @Override
-    public CompletionStage<String> insert(Professor entity) {
+    public CompletionStage<Try<String>> insert(Professor entity) {
         return supplyAsync(() -> {
-            entity.id = UUID.randomUUID().toString();
-            ebeanServer.insert(entity);
-            return entity.id;
+            try {
+                entity.id = UUID.randomUUID().toString();
+                ebeanServer.insert(entity);
+                return new Success(entity.id);
+            }catch (DuplicateKeyException e){
+                return new Failure(new Exception("Email already exists"));
+            }
         }, executionContext);
     }
 

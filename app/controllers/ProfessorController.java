@@ -7,10 +7,9 @@ import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Result;
 import repository.ProfessorModule;
-
+import scala.util.Failure;
+import scala.util.Success;
 import javax.inject.Inject;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 public class ProfessorController extends Controller {
@@ -27,7 +26,12 @@ public class ProfessorController extends Controller {
         JsonNode jsonNode = request().body().asJson();
         Professor professor = Json.fromJson(jsonNode, Professor.class);
         return professorModule.insert(professor).thenApplyAsync(data -> {
-            return status(201, data);
+            if(data.isSuccess()) {
+                return status(201, data.get());
+            }
+            else {
+                return status(409, ((Failure)data).exception().getMessage());
+            }
         }, executionContext.current());
     }
 

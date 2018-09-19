@@ -7,10 +7,12 @@ import io.ebean.Transaction;
 import models.Student;
 import models.Subject;
 import play.db.ebean.EbeanConfig;
+import scala.util.Failure;
+import scala.util.Success;
+import scala.util.Try;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,7 +22,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static play.mvc.Results.ok;
 import static play.mvc.Results.status;
 
-public class SubjectModule implements IModule<Subject>{
+public class SubjectModule implements IModule<Subject> {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
@@ -66,7 +68,7 @@ public class SubjectModule implements IModule<Subject>{
     }
 
     @Override
-    public CompletionStage<String> insert(Subject entity) {
+    public CompletionStage<Try<String>> insert(Subject entity) {
         return supplyAsync(() -> {
             Subject subjectInDatabase = ebeanServer.find(Subject.class)
                     .where().eq("subjectName", entity.subjectName).eq("careerYear", entity.careerYear)
@@ -75,12 +77,12 @@ public class SubjectModule implements IModule<Subject>{
                 if (checkRequiredSubjects(entity)) {
                     entity.id = UUID.randomUUID().toString();
                     ebeanServer.insert(entity);
-                    return entity.id;
+                    return new Success(entity.id);
                 } else {
-                    return "Required subject does not exist";
+                    return new Failure(new Exception("Required subject does not exist"));
                 }
             } else {
-                return "Subject exists";
+                return new Failure(new Exception("Subject exists"));
             }
         }, executionContext);
     }

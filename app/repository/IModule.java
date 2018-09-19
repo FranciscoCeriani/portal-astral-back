@@ -1,6 +1,6 @@
 package repository;
 
-import models.Student;
+import scala.util.Try;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +12,7 @@ public interface IModule<T> {
 
     CompletionStage<Optional<Boolean>> delete(String id);
 
-    CompletionStage<String> insert(T entity);
+    CompletionStage<Try<String>> insert(T entity);
 
     CompletionStage<Optional<T>> get(String id);
 

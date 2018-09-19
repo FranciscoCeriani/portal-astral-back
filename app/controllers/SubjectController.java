@@ -42,7 +42,7 @@ public class SubjectController extends Controller {
             } else if (data.equals("Required subject does not exist")){
                 return status(400, "Required subject does not exist");
             }
-            return status(201, data);
+            return status(201, data.get());
         }, executionContext.current());
     }
 
