@@ -15,6 +15,9 @@ GET     /subject/:id        controllers.SubjectController.getSubject(id :String)
 PUT     /subject/:id        controllers.SubjectController.updateSubject(id: String)
 
 
+POST    /correlative        controllers.SubjectController.saveRequiredSubject
+
+
 POST     /administrator      controllers.AdminController.saveAdmin
 GET     /administrator      controllers.AdminController.getAllAdmins
 GET     /administrator/:id      controllers.AdminController.getAdmin(id: String)

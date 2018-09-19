@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Subject extends BaseModel{
+public class Subject extends BaseModel {
 
     @Constraints.Required
     public String subjectName;
@@ -16,14 +16,18 @@ public class Subject extends BaseModel{
     @ManyToMany
     public List<Student> students;
 
-    public Subject(){
+    public List<Subject> requiredSubjects;
+
+    public Subject() {
         subjectName = "";
         students = new ArrayList<>();
+        requiredSubjects = new ArrayList<>();
     }
 
-    public Subject(String subjectName, ArrayList<Student> students){
+    public Subject(String subjectName, ArrayList<Student> students, ArrayList<Subject> requiredSubjects) {
         this.subjectName = subjectName;
         this.students = students;
+        this.requiredSubjects = requiredSubjects;
     }
 
 }

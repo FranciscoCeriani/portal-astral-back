@@ -6,6 +6,7 @@ import io.ebean.Model;
 import io.ebean.Transaction;
 import models.Student;
 import models.Subject;
+import org.springframework.beans.BeanUtils;
 import play.db.ebean.EbeanConfig;
 import play.libs.Json;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -21,7 +22,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static play.mvc.Results.ok;
 import static play.mvc.Results.status;
 
-public class SubjectModule implements IModule<Subject>{
+public class SubjectModule implements IModule<Subject> {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
@@ -40,8 +41,8 @@ public class SubjectModule implements IModule<Subject>{
             try {
                 Subject savedSubject = ebeanServer.find(Subject.class).setId(id).findOne();
                 if (savedSubject != null) {
-                    savedSubject.subjectName = entity.subjectName;
-                    savedSubject.students = entity.students;
+                    entity.id = id;
+                    BeanUtils.copyProperties(entity, savedSubject);
                     savedSubject.update();
                     txn.commit();
                     value = Optional.of(true);
@@ -105,6 +106,27 @@ public class SubjectModule implements IModule<Subject>{
                 if (subject != null) {
                     subject.students.add(student);
                     update(subjectID, subject);
+                    value = Optional.of(subject);
+                }
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
+    }
+
+    public CompletionStage<Optional<Subject>> addRequiredSubject(String subjectID, String requiredSubjectID) {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Optional<Subject> value = Optional.empty();
+            try {
+                Subject subject = ebeanServer.find(Subject.class).setId(subjectID).findOne();
+                Subject requiredSubject = ebeanServer.find(Subject.class).setId(requiredSubjectID).findOne();
+                if (subject != null && requiredSubject != null) {
+                    subject.requiredSubjects.add(requiredSubject);
+                    subject.update();
+                    requiredSubject.update();
+                    txn.commit();
                     value = Optional.of(subject);
                 }
             } finally {
