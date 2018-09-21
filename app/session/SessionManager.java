@@ -2,9 +2,9 @@ package session;
 import com.typesafe.config.ConfigFactory;
 import models.Token;
 import play.mvc.*;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.inject.Inject;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -64,16 +64,34 @@ public class SessionManager extends Action.Simple{
      */
     @Override
     public CompletionStage<Result> call(Http.Context ctx) {
-        String token = getTokenFromCookie(ctx);
-        return tokenModule.get(token).thenCompose(data -> {
-            if (data.isPresent()) {
-                return delegate.call(ctx);
-            }
-            return CompletableFuture.completedFuture(Results.unauthorized("unauthorized"));
-        });
+        Optional<String> tokenId = getTokenFromCookie(ctx);
+        Result unauthorized = Results.unauthorized("unauthorized");
+        CompletionStage<Result> response = CompletableFuture.completedFuture(unauthorized);
+        if (tokenId.isPresent()) {
+            return tokenModule.get(tokenId.get()).thenCompose(data -> {
+                if (data.isPresent()) {
+                    return delegate.call(ctx);
+                }
+                return response;
+            });
+        }
+        return response;
     }
 
-    private String getTokenFromCookie(Http.Context ctx) {
-        throw new NotImplementedException();
+    /**
+     * Retrieves the authentication token from the cookie.
+     *
+     * The cookie must be called "Auth-Token".
+     *
+     * @param ctx The Http.Context of the call
+     * @return An Optional<String> containing the tokenId if it was present in the cookie.
+     */
+    private Optional<String> getTokenFromCookie(Http.Context ctx) {
+        Optional<String> value = Optional.empty();
+        Http.Cookie token = ctx.request().cookies().get("Auth-Token");
+        if (token != null) {
+            value = Optional.of(token.value());
+        }
+        return  value;
     }
 }

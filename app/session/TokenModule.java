@@ -15,7 +15,7 @@ public class TokenModule {
 
     private final EbeanServer ebeanServer;
 
-    public TokenModule() {
+    TokenModule() {
         this.ebeanServer = Ebean.getDefaultServer();
     }
 

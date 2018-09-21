@@ -27,10 +27,6 @@ public class Token extends BaseModel {
         this.lifespan = lifespan;
     }
 
-    public Token(){
-        this.userId = "";
-    }
-
     public boolean isValid() {
         return new Timestamp(System.currentTimeMillis()).compareTo(this.validUntil) <= 0;
     }
