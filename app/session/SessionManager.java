@@ -12,15 +12,7 @@ public class SessionManager extends Action.Simple{
 
     private final TokenModule tokenModule;
 
-    private static SessionManager singleInstance = null;
     private final int tokenLifespan;
-
-    public static SessionManager getInstance() {
-        if (singleInstance == null) {
-            singleInstance = new SessionManager();
-        }
-        return singleInstance;
-    }
 
     @Inject
     private SessionManager() {
