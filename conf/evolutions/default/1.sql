@@ -52,6 +52,7 @@ create table token (
   id                            varchar(255) not null,
   user_id                       varchar(255),
   valid_until                   timestamp,
+  lifespan                      integer not null,
   constraint pk_token primary key (id)
 );
 
