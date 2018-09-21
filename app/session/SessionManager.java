@@ -73,14 +73,14 @@ public class SessionManager extends Action.Simple{
     /**
      * Retrieves the authentication token from the cookie.
      *
-     * The cookie must be called "Auth-Token".
+     * The cookie must be called "Token".
      *
      * @param ctx The Http.Context of the call
      * @return An Optional<String> containing the tokenId if it was present in the cookie.
      */
     private Optional<String> getTokenFromCookie(Http.Context ctx) {
         Optional<String> value = Optional.empty();
-        Http.Cookie token = ctx.request().cookies().get("Auth-Token");
+        Http.Cookie token = ctx.request().cookies().get("Token");
         if (token != null) {
             value = Optional.of(token.value());
         }
