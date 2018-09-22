@@ -150,12 +150,11 @@ public class SubjectModule implements IModule<Subject> {
             Transaction txn = ebeanServer.beginTransaction();
             Optional<Subject> value = Optional.empty();
             try {
-                Subject subject = ebeanServer.find(Subject.class).setId(subjectID).findOne();
                 Subject requiredSubject = ebeanServer.find(Subject.class).setId(requiredSubjectID).findOne();
+                Subject subject = ebeanServer.find(Subject.class).setId(subjectID).findOne();
                 if (subject != null && requiredSubject != null) {
-                    subject.requiredSubjects.add(requiredSubject);
+                    subject.addRequiredSubject(requiredSubjectID);
                     subject.update();
-                    requiredSubject.update();
                     txn.commit();
                     value = Optional.of(subject);
                 }

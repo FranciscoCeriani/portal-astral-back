@@ -18,7 +18,7 @@ public class Subject extends BaseModel{
     public int careerYear;
 
     @Constraints.Required
-    public List<String> requiredSubjects;
+    public ArrayList<String> requiredSubjects;
 
     @ManyToMany
     public List<Student> students;
@@ -37,4 +37,11 @@ public class Subject extends BaseModel{
         this.students = students;
     }
 
+    public ArrayList<String> getRequiredSubjects() {
+        return requiredSubjects;
+    }
+
+    public void addRequiredSubject(String rID) {
+        requiredSubjects.add(rID);
+    }
 }
