@@ -5,6 +5,7 @@ import io.ebean.Transaction;
 import models.Professor;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
+import org.springframework.beans.BeanUtils;
 import play.db.ebean.EbeanConfig;
 import scala.util.Failure;
 import scala.util.Success;
@@ -37,11 +38,8 @@ public class ProfessorModule implements IModule<Professor>{
             try {
                 Professor professor = ebeanServer.find(Professor.class).setId(id).findOne();
                 if (professor != null) {
-                    professor.name = entity.name;
-                    professor.lastName = entity.lastName;
-                    professor.file = entity.file;
-                    professor.email = entity.email;
-                    professor.password = entity.password;
+                    entity.id = id;
+                    BeanUtils.copyProperties(entity, professor);
                     professor.update();
                     txn.commit();
                     value = Optional.of(true);

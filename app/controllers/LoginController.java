@@ -47,7 +47,6 @@ public class LoginController {
                         Http.Cookie.builder("Token", tokenID)
                                 .withHttpOnly(true)
                                 .withSameSite(Http.Cookie.SameSite.STRICT)
-                                .withSecure(true)
                                 .build()
                 );
                 response().discardCookie("cookie");
