@@ -16,10 +16,8 @@ GET     /subject/:id        controllers.SubjectController.getSubject(id :String)
 PUT     /subject/:id        controllers.SubjectController.updateSubject(id: String)
 DELETE  /subject/:id        controllers.SubjectController.deleteSubject(id :String)
 
-
 POST    /correlative        controllers.SubjectController.saveRequiredSubject
 POST    /correlative/delete controllers.SubjectController.deleteRequiredSubject
-
 
 POST     /administrator      controllers.AdminController.saveAdmin
 GET     /administrator      controllers.AdminController.getAllAdmins
@@ -38,4 +36,3 @@ GET    /logout/:id     controllers.LogoutController.logout(id: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
-

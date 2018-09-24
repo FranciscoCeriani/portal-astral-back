@@ -109,7 +109,7 @@ public class SubjectController extends Controller {
         Subject subject = Json.fromJson(jsonNode, Subject.class);
         return subjectModule.update(id, subject).thenApplyAsync(data -> {
             if (data.get()) {
-                return status(200, "Subject update");
+                return status(200, "Professor update");
             } else {
                 return status(400, "Resources not found");
             }
