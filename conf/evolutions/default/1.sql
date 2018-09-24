@@ -53,6 +53,14 @@ create table subject_student (
   constraint pk_subject_student primary key (subject_id,student_id)
 );
 
+create table token (
+  id                            varchar(255) not null,
+  user_id                       varchar(255),
+  valid_until                   timestamp,
+  lifespan                      integer not null,
+  constraint pk_token primary key (id)
+);
+
 create index ix_subject_student_subject on subject_student (subject_id);
 alter table subject_student add constraint fk_subject_student_subject foreign key (subject_id) references subject (id) on delete restrict on update restrict;
 
@@ -77,4 +85,6 @@ drop table if exists student;
 drop table if exists subject;
 
 drop table if exists subject_student;
+
+drop table if exists token;
 
