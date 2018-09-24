@@ -1,14 +1,18 @@
 package repository;
 
+import io.ebean.DuplicateKeyException;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
-import io.ebean.Model;
 import io.ebean.Transaction;
 import models.Student;
+import org.springframework.beans.BeanUtils;
 import play.db.ebean.EbeanConfig;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import scala.util.Failure;
+import scala.util.Success;
+import scala.util.Try;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletionStage;
@@ -27,25 +31,28 @@ public class StudentModule implements IModule<Student> {
     }
 
     @Override
-    public CompletionStage<String> insert(Student entity) {
+    public CompletionStage<Try<String>> insert(Student entity) {
         return supplyAsync(() -> {
-            entity.id = UUID.randomUUID().toString();
-            ebeanServer.insert(entity);
-            return entity.id;
+            try {
+                entity.id = UUID.randomUUID().toString();
+                ebeanServer.insert(entity);
+                return new Success(entity.id);
+            }catch (DuplicateKeyException e){
+                return new Failure(new Exception("Email already exists"));
+            }
         }, executionContext);
     }
 
     @Override
     public CompletionStage<Optional<Boolean>> update(String id, Student entity) {
-        throw new NotImplementedException();
-        /*return supplyAsync(() -> {
+        return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             Optional<Boolean> value = Optional.of(false);
             try {
                 Student savedStudent = ebeanServer.find(Student.class).setId(id).findOne();
                 if (savedStudent != null) {
-                    savedStudent.name = entity.name;
-                    savedStudent.lastName = entity.lastName;
+                    entity.id = id;
+                    BeanUtils.copyProperties(entity, savedStudent);
                     savedStudent.update();
                     txn.commit();
                     value = Optional.of(true);
@@ -54,27 +61,29 @@ public class StudentModule implements IModule<Student> {
                 txn.end();
             }
             return value;
-        }, executionContext);*/
+        }, executionContext);
     }
 
     @Override
     public CompletionStage<Optional<Boolean>> delete(String id) {
-        throw new NotImplementedException();
-        /*return supplyAsync(() -> {
+        return supplyAsync(() -> {
             try {
-                final Optional<Student> computerOptional = Optional.ofNullable(ebeanServer.find(Student.class).setId(id).findOne());
-                computerOptional.ifPresent(Model::delete);
-                return Optional.of(true);
+                final Optional<Student> student = Optional.ofNullable(ebeanServer.find(Student.class, id));
+                if (student.isPresent()){
+                    ebeanServer.delete(student.get());
+                    return Optional.of(true);
+                } else {
+                    return Optional.of(false);
+                }
             } catch (Exception e) {
                 return Optional.of(false);
             }
-        }, executionContext);*/
+        }, executionContext);
     }
 
     @Override
     public CompletionStage<Optional<Student>> get(String id) {
-        throw new NotImplementedException();
-        /*return supplyAsync(() -> {
+        return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             Optional<Student> value = Optional.empty();
             try {
@@ -86,6 +95,21 @@ public class StudentModule implements IModule<Student> {
                 txn.end();
             }
             return value;
-        }, executionContext);*/
+        }, executionContext);
+    }
+
+    public CompletionStage<List<Student>> getAll() {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            List<Student> value;
+            try {
+
+                List<Student> studentList = ebeanServer.find(Student.class).findList();
+                value = studentList;
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
     }
 }

@@ -2,8 +2,7 @@ package models;
 
 import play.data.validation.Constraints;
 
-import javax.persistence.Entity;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 
 @MappedSuperclass
 public abstract class  User extends BaseModel{
@@ -18,6 +17,7 @@ public abstract class  User extends BaseModel{
     public String file;
 
     @Constraints.Required
+    @Column(unique = true)
     public String email;
 
     @Constraints.Required

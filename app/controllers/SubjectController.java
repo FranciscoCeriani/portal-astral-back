@@ -11,6 +11,9 @@ import repository.StudentModule;
 import repository.SubjectModule;
 
 import javax.inject.Inject;
+import java.util.Optional;
+import java.util.Iterator;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -24,7 +27,7 @@ public class SubjectController extends Controller {
     private final StudentModule studentModule;
 
     @Inject
-    public SubjectController (HttpExecutionContext executionContext, SubjectModule subjectModule, StudentModule studentModule) {
+    public SubjectController(HttpExecutionContext executionContext, SubjectModule subjectModule, StudentModule studentModule) {
         this.executionContext = executionContext;
         this.subjectModule = subjectModule;
         this.studentModule = studentModule;
@@ -32,12 +35,16 @@ public class SubjectController extends Controller {
 
 
     public CompletionStage<Result> saveSubject() {
-
         JsonNode json = request().body().asJson();
-        Subject realSubject = Json.fromJson(json, Subject.class);
-        return subjectModule.insert(realSubject).thenApplyAsync(data -> {
+        Subject subject = Json.fromJson(json, Subject.class);
+        return subjectModule.insert(subject).thenApplyAsync(data -> {
             // This is the HTTP rendering thread context
-            return status(201, data);
+            if (data.equals("Subject exists")){
+                return status(403, "Subject already exists");
+            } else if (data.equals("Required subject does not exist")){
+                return status(400, "Required subject does not exist");
+            }
+            return status(201, data.get());
         }, executionContext.current());
     }
 
@@ -45,25 +52,62 @@ public class SubjectController extends Controller {
 
         return subjectModule.get(id).thenApplyAsync(data -> {
             // This is the HTTP rendering thread context
-            if(data.isPresent()){
+            if (data.isPresent()) {
                 Subject subject = data.get();
                 return ok(Json.toJson(subject));
-            }else{
+            } else {
                 return status(404, "Resource not found");
             }
         }, executionContext.current());
     }
 
-    public CompletionStage<Result> saveStudentToSubject(String subjectId){
+    public CompletionStage<Result> saveStudentToSubject(String subjectId) {
         JsonNode json = request().body().asJson();
         Student student = Json.fromJson(json, Student.class);
 
         return subjectModule.addStudentToSubject(student, subjectId).thenApplyAsync(data -> {
             // This is the HTTP rendering thread context
-            if(data.isPresent()){
+            if (data.isPresent()) {
                 return ok(Json.toJson(data));
-            }else{
+            } else {
                 return status(404, "Resource not found");
+            }
+        }, executionContext.current());
+    }
+
+    public CompletionStage<Result> saveRequiredSubject() {
+        JsonNode jsonNode = request().body().asJson();
+        Iterator<JsonNode> ids = jsonNode.elements();
+        String subjectID = ids.next().textValue();
+        String requiredSubjectID = ids.next().textValue();
+        return subjectModule.addRequiredSubject(subjectID, requiredSubjectID).thenApplyAsync(data -> {
+            if (data.isPresent()) {
+                return status(200, "Subject added");
+            } else {
+                return status(400, "Resource not found");
+            }
+        }, executionContext.current());
+    }
+
+    public CompletionStage<Result> updateSubject(String id) {
+        JsonNode jsonNode = request().body().asJson();
+        Subject subject = Json.fromJson(jsonNode, Subject.class);
+        return subjectModule.update(id, subject).thenApplyAsync(data -> {
+            if (data.get()) {
+                return status(200, "Professor update");
+            } else {
+                return status(400, "Resources not found");
+            }
+        }, executionContext.current());
+    }
+
+    public CompletionStage<Result> deleteSubject(String id) {
+        return subjectModule.delete(id).thenApplyAsync(data -> {
+            // This is the HTTP rendering thread context
+            if (data.isPresent() && data.get()) {
+                return status(200, id);
+            } else {
+                return status(404, "Subject not found");
             }
         }, executionContext.current());
     }

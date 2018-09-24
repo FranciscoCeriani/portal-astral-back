@@ -10,6 +10,7 @@ create table admin (
   file                          varchar(255),
   email                         varchar(255),
   password                      varchar(255),
+  constraint uq_admin_email unique (email),
   constraint pk_admin primary key (id)
 );
 
@@ -20,6 +21,7 @@ create table professor (
   file                          varchar(255),
   email                         varchar(255),
   password                      varchar(255),
+  constraint uq_professor_email unique (email),
   constraint pk_professor primary key (id)
 );
 
@@ -33,12 +35,15 @@ create table student (
   birthday                      varchar(255),
   identification_type           varchar(255),
   identification                varchar(255),
+  constraint uq_student_email unique (email),
   constraint pk_student primary key (id)
 );
 
 create table subject (
   id                            varchar(255) not null,
   subject_name                  varchar(255),
+  career_year                   integer not null,
+  required_subjects             clob,
   constraint pk_subject primary key (id)
 );
 

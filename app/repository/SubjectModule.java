@@ -6,11 +6,16 @@ import io.ebean.Model;
 import io.ebean.Transaction;
 import models.Student;
 import models.Subject;
+import org.springframework.beans.BeanUtils;
 import play.db.ebean.EbeanConfig;
-import play.libs.Json;
+import scala.util.Failure;
+import scala.util.Success;
+import scala.util.Try;
+//import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletionStage;
@@ -19,7 +24,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static play.mvc.Results.ok;
 import static play.mvc.Results.status;
 
-public class SubjectModule implements IModule<Subject>{
+public class SubjectModule implements IModule<Subject> {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
@@ -38,8 +43,8 @@ public class SubjectModule implements IModule<Subject>{
             try {
                 Subject savedSubject = ebeanServer.find(Subject.class).setId(id).findOne();
                 if (savedSubject != null) {
-                    savedSubject.subjectName = entity.subjectName;
-                    savedSubject.students = entity.students;
+                    entity.id = id;
+                    BeanUtils.copyProperties(entity, savedSubject);
                     savedSubject.update();
                     txn.commit();
                     value = Optional.of(true);
@@ -55,9 +60,13 @@ public class SubjectModule implements IModule<Subject>{
     public CompletionStage<Optional<Boolean>> delete(String id) {
         return supplyAsync(() -> {
             try {
-                final Optional<Subject> computerOptional = Optional.ofNullable(ebeanServer.find(Subject.class).setId(id).findOne());
-                computerOptional.ifPresent(Model::delete);
-                return Optional.of(true);
+                final Optional<Subject> subject = Optional.ofNullable(ebeanServer.find(Subject.class, id));
+                if (subject.isPresent()){
+                    ebeanServer.delete(subject.get());
+                    return Optional.of(true);
+                } else {
+                    return Optional.of(false);
+                }
             } catch (Exception e) {
                 return Optional.of(false);
             }
@@ -65,12 +74,37 @@ public class SubjectModule implements IModule<Subject>{
     }
 
     @Override
-    public CompletionStage<String> insert(Subject entity) {
+    public CompletionStage<Try<String>> insert(Subject entity) {
         return supplyAsync(() -> {
-            entity.id = UUID.randomUUID().toString();
-            ebeanServer.insert(entity);
-            return entity.id;
+            Subject subjectInDatabase = ebeanServer.find(Subject.class)
+                    .where().eq("subjectName", entity.subjectName).eq("careerYear", entity.careerYear)
+                    .findOne();
+            if (subjectInDatabase == null) {
+                if (checkRequiredSubjects(entity)) {
+                    entity.id = UUID.randomUUID().toString();
+                    ebeanServer.insert(entity);
+                    return new Success(entity.id);
+                } else {
+                    return new Failure(new Exception("Required subject does not exist"));
+                }
+            } else {
+                return new Failure(new Exception("Subject exists"));
+            }
         }, executionContext);
+    }
+
+    private boolean checkRequiredSubjects(Subject subject) {
+        Subject subjectToTest;
+        List<String> subjects = subject.requiredSubjects;
+        for (String id : subjects) {
+            subjectToTest = ebeanServer.find(Subject.class)
+                    .where().eq("id", id)
+                    .findOne();
+            if (subjectToTest == null) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -90,6 +124,12 @@ public class SubjectModule implements IModule<Subject>{
         }, executionContext);
     }
 
+    public CompletionStage<List<Subject>> getAll() {
+        return supplyAsync(() -> {
+            return new ArrayList<>();
+        });
+    }
+
     public CompletionStage<Optional<Subject>> addStudentToSubject(Student student, String subjectID) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
@@ -99,6 +139,26 @@ public class SubjectModule implements IModule<Subject>{
                 if (subject != null) {
                     subject.students.add(student);
                     update(subjectID, subject);
+                    value = Optional.of(subject);
+                }
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
+    }
+
+    public CompletionStage<Optional<Subject>> addRequiredSubject(String subjectID, String requiredSubjectID) {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Optional<Subject> value = Optional.empty();
+            try {
+                Subject requiredSubject = ebeanServer.find(Subject.class).setId(requiredSubjectID).findOne();
+                Subject subject = ebeanServer.find(Subject.class).setId(subjectID).findOne();
+                if (subject != null && requiredSubject != null) {
+                    subject.addRequiredSubject(requiredSubjectID);
+                    subject.update();
+                    txn.commit();
                     value = Optional.of(subject);
                 }
             } finally {
