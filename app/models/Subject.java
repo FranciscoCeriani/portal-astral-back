@@ -49,4 +49,5 @@ public class Subject extends BaseModel{
     public boolean deleteRequiredSubject(String rID){
         return requiredSubjects.remove(rID);
     }
+
 }

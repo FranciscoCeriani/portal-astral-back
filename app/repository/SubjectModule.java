@@ -181,6 +181,7 @@ public class SubjectModule implements IModule<Subject> {
                     txn.commit();
                     value = Optional.of(result);
                 }
+
             } finally {
                 txn.end();
             }

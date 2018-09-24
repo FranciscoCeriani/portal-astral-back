@@ -94,6 +94,7 @@ public class SubjectController extends Controller {
         Iterator<JsonNode> ids = jsonNode.elements();
         String subjectID = ids.next().textValue();
         String requiredSubjectID = ids.next().textValue();
+
         return subjectModule.deleteRequiredSubject(subjectID, requiredSubjectID).thenApplyAsync(data -> {
             if (data.get()) {
                 return status(200, "Subject deleted");
