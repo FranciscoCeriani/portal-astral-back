@@ -13,7 +13,12 @@ POST    /subject            controllers.SubjectController.saveSubject
 POST    /subject/:id        controllers.SubjectController.saveStudentToSubject(id :String)
 GET     /subject        controllers.SubjectController.getSubject(id :String)
 GET     /subject/:id        controllers.SubjectController.getSubject(id :String)
+PUT     /subject/:id        controllers.SubjectController.updateSubject(id: String)
 DELETE  /subject/:id        controllers.SubjectController.deleteSubject(id :String)
+
+
+POST    /correlative        controllers.SubjectController.saveRequiredSubject
+POST    /correlative/delete controllers.SubjectController.deleteRequiredSubject
 
 
 POST     /administrator      controllers.AdminController.saveAdmin
@@ -28,10 +33,8 @@ GET    /professor/:id         controllers.ProfessorController.getProfessor(id: S
 DELETE  /professor/:id      controllers.ProfessorController.deleteProfessor(id: String)
 PUT     /professor/:id      controllers.ProfessorController.updateProfessor(id: String)
 
-POST    /subject          controllers.SubjectController.saveSubject
-
 POST    /login    controllers.LoginController.validateUser
+GET    /logout/:id     controllers.LogoutController.logout(id: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
-
