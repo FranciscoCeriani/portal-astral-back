@@ -167,24 +167,4 @@ public class SubjectModule implements IModule<Subject> {
             return value;
         }, executionContext);
     }
-
-    public CompletionStage<Optional<Boolean>> deleteRequiredSubject(String subjectID, String requiredSubjectID) {
-        return supplyAsync(() -> {
-            Transaction txn = ebeanServer.beginTransaction();
-            Optional<Boolean> value = Optional.of(false);
-            try {
-                Subject requiredSubject = ebeanServer.find(Subject.class).setId(requiredSubjectID).findOne();
-                Subject subject = ebeanServer.find(Subject.class).setId(subjectID).findOne();
-                if (subject != null && requiredSubject != null) {
-                    boolean result = subject.deleteRequiredSubject(requiredSubjectID);
-                    subject.update();
-                    txn.commit();
-                    value = Optional.of(result);
-                }
-            } finally {
-                txn.end();
-            }
-            return value;
-        }, executionContext);
-    }
 }
