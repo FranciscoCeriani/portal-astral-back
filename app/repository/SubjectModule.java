@@ -11,9 +11,10 @@ import play.db.ebean.EbeanConfig;
 import scala.util.Failure;
 import scala.util.Success;
 import scala.util.Try;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+//import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -124,7 +125,9 @@ public class SubjectModule implements IModule<Subject> {
     }
 
     public CompletionStage<List<Subject>> getAll() {
-        throw new NotImplementedException();
+        return supplyAsync(() -> {
+            return new ArrayList<>();
+        });
     }
 
     public CompletionStage<Optional<Subject>> addStudentToSubject(Student student, String subjectID) {

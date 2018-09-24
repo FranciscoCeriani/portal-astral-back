@@ -43,6 +43,7 @@ create table subject (
   id                            varchar(255) not null,
   subject_name                  varchar(255),
   career_year                   integer not null,
+  required_subjects             clob,
   constraint pk_subject primary key (id)
 );
 

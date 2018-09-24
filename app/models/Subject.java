@@ -1,5 +1,6 @@
 package models;
 
+import io.ebean.annotation.DbJson;
 import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
@@ -17,7 +18,7 @@ public class Subject extends BaseModel{
     @Constraints.Required
     public int careerYear;
 
-    @Constraints.Required
+    @DbJson
     public ArrayList<String> requiredSubjects;
 
     @ManyToMany
