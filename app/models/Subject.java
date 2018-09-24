@@ -1,5 +1,6 @@
 package models;
 
+import io.ebean.annotation.DbJson;
 import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
@@ -17,8 +18,8 @@ public class Subject extends BaseModel{
     @Constraints.Required
     public int careerYear;
 
-    @Constraints.Required
-    public List<String> requiredSubjects;
+    @DbJson
+    public ArrayList<String> requiredSubjects;
 
     @ManyToMany
     public List<Student> students;
@@ -37,4 +38,15 @@ public class Subject extends BaseModel{
         this.students = students;
     }
 
+    public ArrayList<String> getRequiredSubjects() {
+        return requiredSubjects;
+    }
+
+    public void addRequiredSubject(String rID) {
+        requiredSubjects.add(rID);
+    }
+
+    public boolean deleteRequiredSubject(String rID){
+        return requiredSubjects.remove(rID);
+    }
 }
