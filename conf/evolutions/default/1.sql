@@ -10,6 +10,7 @@ create table admin (
   file                          varchar(255),
   email                         varchar(255),
   password                      varchar(255),
+  constraint uq_admin_email unique (email),
   constraint pk_admin primary key (id)
 );
 
@@ -20,6 +21,7 @@ create table professor (
   file                          varchar(255),
   email                         varchar(255),
   password                      varchar(255),
+  constraint uq_professor_email unique (email),
   constraint pk_professor primary key (id)
 );
 
@@ -33,12 +35,14 @@ create table student (
   birthday                      varchar(255),
   identification_type           varchar(255),
   identification                varchar(255),
+  constraint uq_student_email unique (email),
   constraint pk_student primary key (id)
 );
 
 create table subject (
   id                            varchar(255) not null,
   subject_name                  varchar(255),
+  career_year                   integer not null,
   constraint pk_subject primary key (id)
 );
 
@@ -46,6 +50,14 @@ create table subject_student (
   subject_id                    varchar(255) not null,
   student_id                    varchar(255) not null,
   constraint pk_subject_student primary key (subject_id,student_id)
+);
+
+create table token (
+  id                            varchar(255) not null,
+  user_id                       varchar(255),
+  valid_until                   timestamp,
+  lifespan                      integer not null,
+  constraint pk_token primary key (id)
 );
 
 create index ix_subject_student_subject on subject_student (subject_id);
@@ -72,4 +84,6 @@ drop table if exists student;
 drop table if exists subject;
 
 drop table if exists subject_student;
+
+drop table if exists token;
 

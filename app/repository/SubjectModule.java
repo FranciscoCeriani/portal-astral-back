@@ -7,11 +7,12 @@ import io.ebean.Transaction;
 import models.Student;
 import models.Subject;
 import play.db.ebean.EbeanConfig;
-import play.libs.Json;
+import scala.util.Failure;
+import scala.util.Success;
+import scala.util.Try;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,7 +22,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static play.mvc.Results.ok;
 import static play.mvc.Results.status;
 
-public class SubjectModule implements IModule<Subject>{
+public class SubjectModule implements IModule<Subject> {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
@@ -57,9 +58,13 @@ public class SubjectModule implements IModule<Subject>{
     public CompletionStage<Optional<Boolean>> delete(String id) {
         return supplyAsync(() -> {
             try {
-                final Optional<Subject> computerOptional = Optional.ofNullable(ebeanServer.find(Subject.class).setId(id).findOne());
-                computerOptional.ifPresent(Model::delete);
-                return Optional.of(true);
+                final Optional<Subject> subject = Optional.ofNullable(ebeanServer.find(Subject.class, id));
+                if (subject.isPresent()){
+                    ebeanServer.delete(subject.get());
+                    return Optional.of(true);
+                } else {
+                    return Optional.of(false);
+                }
             } catch (Exception e) {
                 return Optional.of(false);
             }
@@ -67,12 +72,37 @@ public class SubjectModule implements IModule<Subject>{
     }
 
     @Override
-    public CompletionStage<String> insert(Subject entity) {
+    public CompletionStage<Try<String>> insert(Subject entity) {
         return supplyAsync(() -> {
-            entity.id = UUID.randomUUID().toString();
-            ebeanServer.insert(entity);
-            return entity.id;
+            Subject subjectInDatabase = ebeanServer.find(Subject.class)
+                    .where().eq("subjectName", entity.subjectName).eq("careerYear", entity.careerYear)
+                    .findOne();
+            if (subjectInDatabase == null) {
+                if (checkRequiredSubjects(entity)) {
+                    entity.id = UUID.randomUUID().toString();
+                    ebeanServer.insert(entity);
+                    return new Success(entity.id);
+                } else {
+                    return new Failure(new Exception("Required subject does not exist"));
+                }
+            } else {
+                return new Failure(new Exception("Subject exists"));
+            }
         }, executionContext);
+    }
+
+    private boolean checkRequiredSubjects(Subject subject) {
+        Subject subjectToTest;
+        List<String> subjects = subject.requiredSubjects;
+        for (String id : subjects) {
+            subjectToTest = ebeanServer.find(Subject.class)
+                    .where().eq("id", id)
+                    .findOne();
+            if (subjectToTest == null) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -92,7 +122,7 @@ public class SubjectModule implements IModule<Subject>{
         }, executionContext);
     }
 
-    public CompletionStage<Optional<List<Subject>>> getAll() {
+    public CompletionStage<List<Subject>> getAll() {
         throw new NotImplementedException();
     }
 
