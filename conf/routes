@@ -18,6 +18,7 @@ DELETE  /subject/:id        controllers.SubjectController.deleteSubject(id :Stri
 
 
 POST    /correlative        controllers.SubjectController.saveRequiredSubject
+POST    /correlative/delete controllers.SubjectController.deleteRequiredSubject
 
 
 POST     /administrator      controllers.AdminController.saveAdmin

@@ -89,6 +89,20 @@ public class SubjectController extends Controller {
         }, executionContext.current());
     }
 
+    public CompletionStage<Result> deleteRequiredSubject(){
+        JsonNode jsonNode = request().body().asJson();
+        Iterator<JsonNode> ids = jsonNode.elements();
+        String subjectID = ids.next().textValue();
+        String requiredSubjectID = ids.next().textValue();
+        return subjectModule.deleteRequiredSubject(subjectID, requiredSubjectID).thenApplyAsync(data -> {
+            if (data.get()) {
+                return status(200, "Subject deleted");
+            } else {
+                return status(400, "Resource not found");
+            }
+        }, executionContext.current());
+    }
+
     public CompletionStage<Result> updateSubject(String id) {
         JsonNode jsonNode = request().body().asJson();
         Subject subject = Json.fromJson(jsonNode, Subject.class);
