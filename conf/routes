@@ -30,6 +30,8 @@ PUT     /professor/:id      controllers.ProfessorController.updateProfessor(id: 
 
 POST    /subject          controllers.SubjectController.saveSubject
 
+POST    /login    controllers.LoginController.validateUser
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
