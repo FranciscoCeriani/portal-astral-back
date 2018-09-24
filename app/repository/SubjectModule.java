@@ -2,7 +2,6 @@ package repository;
 
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
-import io.ebean.Model;
 import io.ebean.Transaction;
 import models.Student;
 import models.Subject;
@@ -10,9 +9,9 @@ import play.db.ebean.EbeanConfig;
 import scala.util.Failure;
 import scala.util.Success;
 import scala.util.Try;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -123,7 +122,19 @@ public class SubjectModule implements IModule<Subject> {
     }
 
     public CompletionStage<List<Subject>> getAll() {
-        throw new NotImplementedException();
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            try {
+                List<Subject> allSubjects = ebeanServer.find(Subject.class).findList();
+                if (allSubjects != null) {
+                    return allSubjects;
+                } else {
+                    return new ArrayList<Subject>();
+                }
+            } finally {
+                txn.end();
+            }
+        }, executionContext);
     }
 
     public CompletionStage<Optional<Subject>> addStudentToSubject(Student student, String subjectID) {

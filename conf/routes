@@ -11,7 +11,7 @@ PUT     /student/:id      controllers.StudentController.updateStudent(id: String
 
 POST    /subject            controllers.SubjectController.saveSubject
 POST    /subject/:id        controllers.SubjectController.saveStudentToSubject(id :String)
-GET     /subject        controllers.SubjectController.getSubject(id :String)
+GET     /subject            controllers.SubjectController.getAllSubjects
 GET     /subject/:id        controllers.SubjectController.getSubject(id :String)
 DELETE  /subject/:id        controllers.SubjectController.deleteSubject(id :String)
 

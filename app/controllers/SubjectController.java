@@ -11,6 +11,7 @@ import repository.StudentModule;
 import repository.SubjectModule;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -55,6 +56,19 @@ public class SubjectController extends Controller {
                 return ok(Json.toJson(subject));
             }else{
                 return status(404, "Resource not found");
+            }
+        }, executionContext.current());
+    }
+
+    public CompletionStage<Result> getAllSubjects() {
+
+        return subjectModule.getAll().thenApplyAsync(data -> {
+            // This is the HTTP rendering thread context
+            if(!data.isEmpty()){
+                List<Subject> subjects = data;
+                return ok(Json.toJson(subjects));
+            } else {
+                return status(404, "No subjects found");
             }
         }, executionContext.current());
     }
