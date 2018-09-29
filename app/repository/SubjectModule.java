@@ -126,8 +126,16 @@ public class SubjectModule implements IModule<Subject> {
 
     public CompletionStage<List<Subject>> getAll() {
         return supplyAsync(() -> {
-            return new ArrayList<>();
-        });
+            Transaction txn = ebeanServer.beginTransaction();
+            List<Subject> value;
+            try {
+                List<Subject> savedAdmins = ebeanServer.find(Subject.class).findList();
+                value = savedAdmins;
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
     }
 
     public CompletionStage<Optional<Subject>> addStudentToSubject(Student student, String subjectID) {

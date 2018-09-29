@@ -9,6 +9,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import repository.StudentModule;
 import repository.SubjectModule;
+import scala.util.Failure;
 
 import javax.inject.Inject;
 import java.util.Optional;
@@ -39,12 +40,12 @@ public class SubjectController extends Controller {
         Subject subject = Json.fromJson(json, Subject.class);
         return subjectModule.insert(subject).thenApplyAsync(data -> {
             // This is the HTTP rendering thread context
-            if (data.equals("Subject exists")){
-                return status(403, "Subject already exists");
-            } else if (data.equals("Required subject does not exist")){
-                return status(400, "Required subject does not exist");
+            if(data.isSuccess()) {
+                return status(201, data.get());
             }
-            return status(201, data.get());
+            else {
+                return status(409, ((Failure)data).exception().getMessage());
+            }
         }, executionContext.current());
     }
 
@@ -58,6 +59,13 @@ public class SubjectController extends Controller {
             } else {
                 return status(404, "Resource not found");
             }
+        }, executionContext.current());
+    }
+
+    public CompletionStage<Result> getAllSubjects() {
+        return subjectModule.getAll().thenApplyAsync(data -> {
+            // This is the HTTP rendering thread context
+            return ok(Json.toJson(data));
         }, executionContext.current());
     }
 
