@@ -2,7 +2,6 @@ package repository;
 
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
-import io.ebean.Model;
 import io.ebean.Transaction;
 import models.Student;
 import models.Subject;
@@ -124,20 +123,22 @@ public class SubjectModule implements IModule<Subject> {
         }, executionContext);
     }
 
-    public CompletionStage<List<Subject>> getAll() {
+   public CompletionStage<List<Subject>> getAll() {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
-            List<Subject> value;
             try {
-                List<Subject> savedAdmins = ebeanServer.find(Subject.class).findList();
-                value = savedAdmins;
+                List<Subject> allSubjects = ebeanServer.find(Subject.class).findList();
+                if (allSubjects != null) {
+                    return allSubjects;
+                } else {
+                    return new ArrayList<Subject>();
+                }
             } finally {
                 txn.end();
             }
-            return value;
         }, executionContext);
     }
-
+  
     public CompletionStage<Optional<Subject>> addStudentToSubject(Student student, String subjectID) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();

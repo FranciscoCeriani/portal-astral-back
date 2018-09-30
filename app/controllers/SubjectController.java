@@ -7,11 +7,15 @@ import play.libs.Json;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.With;
 import repository.StudentModule;
 import repository.SubjectModule;
+import session.SessionManager;
 import scala.util.Failure;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
@@ -62,10 +66,17 @@ public class SubjectController extends Controller {
         }, executionContext.current());
     }
 
+    @With(SessionManager.class)
     public CompletionStage<Result> getAllSubjects() {
         return subjectModule.getAll().thenApplyAsync(data -> {
             // This is the HTTP rendering thread context
-            return ok(Json.toJson(data));
+            if(!data.isEmpty()){
+                List<Subject> subjects = data;
+                return ok(Json.toJson(subjects));
+            } else {
+                List<Subject> subjects = new ArrayList<>();
+                return ok(Json.toJson(subjects));
+            }
         }, executionContext.current());
     }
 
