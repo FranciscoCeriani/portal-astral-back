@@ -123,7 +123,7 @@ public class SubjectModule implements IModule<Subject> {
         }, executionContext);
     }
 
-    public CompletionStage<List<Subject>> getAll() {
+   public CompletionStage<List<Subject>> getAll() {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             try {
@@ -138,7 +138,7 @@ public class SubjectModule implements IModule<Subject> {
             }
         }, executionContext);
     }
-
+  
     public CompletionStage<Optional<Subject>> addStudentToSubject(Student student, String subjectID) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
