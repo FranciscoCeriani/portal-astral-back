@@ -123,7 +123,7 @@ public class SubjectModule implements IModule<Subject> {
         }, executionContext);
     }
 
-   public CompletionStage<List<Subject>> getAll() {
+    public CompletionStage<List<Subject>> getAll() {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             try {
@@ -164,7 +164,7 @@ public class SubjectModule implements IModule<Subject> {
             try {
                 Subject requiredSubject = ebeanServer.find(Subject.class).setId(requiredSubjectID).findOne();
                 Subject subject = ebeanServer.find(Subject.class).setId(subjectID).findOne();
-                if (subject != null && requiredSubject != null) {
+                if (subject != null && requiredSubject != null && !checkRequiredSubjects(requiredSubject)) {
                     subject.addRequiredSubject(requiredSubjectID);
                     subject.update();
                     txn.commit();

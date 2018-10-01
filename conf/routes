@@ -9,6 +9,12 @@ GET     /student/:id        controllers.StudentController.getStudent(id: String)
 DELETE  /student/:id        controllers.StudentController.deleteStudent(id: String)
 PUT     /student/:id      controllers.StudentController.updateStudent(id: String)
 
+POST     /course           controllers.CourseController.saveCourse
+GET     /course           controllers.CourseController.getAllCourses
+GET     /course/:id        controllers.CourseController.getCourse(id: String)
+DELETE  /course/:id        controllers.CourseController.deleteCourse(id: String)
+PUT     /course/:id      controllers.CourseController.updateCourse(id: String)
+
 POST    /subject            controllers.SubjectController.saveSubject
 POST    /subject/:id        controllers.SubjectController.saveStudentToSubject(id :String)
 GET     /subject            controllers.SubjectController.getAllSubjects
