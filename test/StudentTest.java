@@ -76,10 +76,32 @@ public class StudentTest {
         assertEquals(404, result.status());
     }
 
+    @Test
+    public void updateTest() throws Exception {
+        Optional<String> optionalAddress = Optional.empty();
+        Student student = new Student("name", "lastName", "file", "email", "password", "birthday", "idType", "id", optionalAddress);
+        Result result = insertStudent(student);
+        String id = contentAsString(result);
+        Student newStudent = new Student("name2", "lastName2", "file", "email", "password", "birthday", "idType", "id", optionalAddress);
+        result = updateStudent(id, newStudent);
+        assertEquals(200, result.status());
+        result = getStudent(id);
+        Student retrieved = readValue(result, new TypeReference<Student>(){});
+        assertEquals(retrieved.name, "name2");
+        assertEquals(retrieved.lastName, "lastName2");
+    }
+
+
     private Result insertStudent(Student student) {
         Http.RequestBuilder requestBuilder = Helpers.fakeRequest().method(POST).uri("/student").bodyJson(Json.toJson(student));
         return route(application, requestBuilder);
     }
+
+    private Result updateStudent(String id, Student student) {
+        Http.RequestBuilder request = Helpers.fakeRequest().method(PUT).uri("/student/" + id).bodyJson(Json.toJson(student));
+        return route(application, request);
+    }
+
 
     private Result getStudent(String id) {
         Http.RequestBuilder requestBuilder = Helpers.fakeRequest().method(GET).uri("/student/" + id);
