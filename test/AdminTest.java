@@ -49,7 +49,7 @@ public class AdminTest {
         Admin retrieved = readValue(result, new TypeReference<Admin>(){});
         assertThat(admin, samePropertyValuesAs(retrieved));
 
-        admin.email = "newEmail";
+        admin.email = "newMail";
         insertAdmin(admin);
         result = getAllAdmins();
         List<Admin> admins = readValue(result, new TypeReference<List<Admin>>(){});
