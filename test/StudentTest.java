@@ -33,65 +33,71 @@ public class StudentTest {
     }
 
     @Test
-    public void updateTest() throws Exception {
-        Optional<String> opt = Optional.of("asdada");
-        Student student = new Student("name", "lastName", "file", "email", "password", "idType", "id", opt);
+    public void insertTest() throws Exception {
+        Optional<String> optionalAddress = Optional.empty();
+        Student student = new Student("name", "lastName", "file", "email", "password", "birthday", "identificationType", "identification", optionalAddress);
+
+        Result result = insertStudent(student);
+        assertEquals(201, result.status());
+        String id = contentAsString(result);
+        assertThat(id, is(notNullValue()));
+
+        result = insertStudent(student);
+        assertEquals(409, result.status());
+        result = getStudent(id);
+        student.id = id;
+
+        Student retrieved = readValue(result, new TypeReference<Student>(){});
+        assertThat(student, samePropertyValuesAs(retrieved));
+
+        student.email = "newEmail";
+        insertStudent(student);
+        result = getAllStudents();
+        List<Student> students = readValue(result, new TypeReference<List<Student>>() {});
+        assertEquals(2, students.size());
+    }
+
+    @Test
+    public void deleteTest() throws Exception {
+        Optional<String> optionalAddress = Optional.empty();
+        Student student = new Student("name", "lastName", "file", "email", "password", "birthday", "identificationType", "identification", optionalAddress);
+
         Result result = insertStudent(student);
         String id = contentAsString(result);
-        Student newStudent = new Student("name2", "lastName2", "file", "email", "password");
-        result = updateStudent(id, newStudent);
-        assertEquals(201, result.status());
-        result = getStudent(id);
-        Student retrieved = readValue(result, new TypeReference<Student>(){});
-        assertEquals(retrieved.name, "name2");
-        assertEquals(retrieved.lastName, "lastName2");
+
+        result = deleteStudent(id);
+        assertEquals(200, result.status());
+
+        result = getAllStudents();
+        List<Student> studentList = readValue(result, new TypeReference<List<Student>>() {});
+        assertEquals(0, studentList.size());
+
+        result = deleteStudent("fake-id");
+        assertEquals(404, result.status());
     }
 
     private Result insertStudent(Student student) {
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method(POST)
-                .uri("/student")
-                .bodyJson(Json.toJson(student));
-
-        return route(application, request);
+        Http.RequestBuilder requestBuilder = Helpers.fakeRequest().method(POST).uri("/student").bodyJson(Json.toJson(student));
+        return route(application, requestBuilder);
     }
-
-
-    private Result deleteStudent(String id) {
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method(DELETE)
-                .uri("/student/" + id);
-
-        return route(application, request);
-    }
-
-    private Result updateStudent(String id) {
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method(PUT)
-                .uri("/administrator/" + id)
-                .bodyJson(Json.toJson(student));
-
-        return route(application, request);
-    }
-
 
     private Result getStudent(String id) {
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method(GET)
-                .uri("/student/" + id);
-
-        return route(application, request);
+        Http.RequestBuilder requestBuilder = Helpers.fakeRequest().method(GET).uri("/student/" + id);
+        return route(application, requestBuilder);
     }
 
     private Result getAllStudents() {
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method(GET)
-                .uri("/student");
+        Http.RequestBuilder requestBuilder = Helpers.fakeRequest().method(GET).uri("/student");
+        return route(application, requestBuilder);
+    }
 
-        return route(application, request);
+    private Result deleteStudent(String id) {
+        Http.RequestBuilder requestBuilder = Helpers.fakeRequest().method(DELETE).uri("/student/" + id);
+        return route(application, requestBuilder);
     }
 
     private <T> T readValue(Result result, TypeReference<T> valueTypeRef) throws Exception{
         return Json.mapper().readValue(contentAsString(result), valueTypeRef);
     }
+
 }
