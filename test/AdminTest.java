@@ -72,6 +72,20 @@ public class AdminTest {
         assertEquals(404, result.status());
     }
 
+    @Test
+    public void updateTest() throws Exception {
+        Admin admin = new Admin("name", "lastName", "file", "email", "password");
+        Result result = insertAdmin(admin);
+        String id = contentAsString(result);
+        Admin newAdmin = new Admin("name2", "lastName2", "file", "email", "password");
+        result = updateAdmin(id, newAdmin);
+        assertEquals(201, result.status());
+        result = getAdmin(id);
+        Admin retrieved = readValue(result, new TypeReference<Admin>(){});
+        assertEquals(retrieved.name, "name2");
+        assertEquals(retrieved.lastName, "lastName2");
+    }
+
 
     private Result insertAdmin(Admin admin) {
         Http.RequestBuilder request = Helpers.fakeRequest()
@@ -87,6 +101,15 @@ public class AdminTest {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(DELETE)
                 .uri("/administrator/" + id);
+
+        return route(application, request);
+    }
+
+    private Result updateAdmin(String id, Admin admin) {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method(PUT)
+                .uri("/administrator/" + id)
+                .bodyJson(Json.toJson(admin));
 
         return route(application, request);
     }
