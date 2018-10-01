@@ -135,9 +135,6 @@ public class SubjectTest {
         Subject retrieved = readValue(result, new TypeReference<Subject>(){});
 
         assertThat(student, samePropertyValuesAs(retrieved.students.get(0)));
-
-        //result = updateSubject(subject, "fake-id");
-        //assertEquals(400, result.status());
     }
 
     private Result insertSubject(Subject subject) {
