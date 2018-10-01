@@ -7,10 +7,15 @@ import play.libs.Json;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.With;
 import repository.StudentModule;
 import repository.SubjectModule;
+import session.SessionManager;
+import scala.util.Failure;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
@@ -39,12 +44,12 @@ public class SubjectController extends Controller {
         Subject subject = Json.fromJson(json, Subject.class);
         return subjectModule.insert(subject).thenApplyAsync(data -> {
             // This is the HTTP rendering thread context
-            if (data.equals("Subject exists")){
-                return status(403, "Subject already exists");
-            } else if (data.equals("Required subject does not exist")){
-                return status(400, "Required subject does not exist");
+            if(data.isSuccess()) {
+                return status(201, data.get());
             }
-            return status(201, data.get());
+            else {
+                return status(409, ((Failure)data).exception().getMessage());
+            }
         }, executionContext.current());
     }
 
@@ -57,6 +62,20 @@ public class SubjectController extends Controller {
                 return ok(Json.toJson(subject));
             } else {
                 return status(404, "Resource not found");
+            }
+        }, executionContext.current());
+    }
+
+//    @With(SessionManager.class)
+    public CompletionStage<Result> getAllSubjects() {
+        return subjectModule.getAll().thenApplyAsync(data -> {
+            // This is the HTTP rendering thread context
+            if(!data.isEmpty()){
+                List<Subject> subjects = data;
+                return ok(Json.toJson(subjects));
+            } else {
+                List<Subject> subjects = new ArrayList<>();
+                return ok(Json.toJson(subjects));
             }
         }, executionContext.current());
     }

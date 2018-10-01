@@ -11,7 +11,7 @@ public class Professor extends User {
 
 
     @JsonCreator
-    Professor(@JsonProperty("name") String name,
+    public Professor(@JsonProperty("name") String name,
           @JsonProperty("lastName") String lastName,
           @JsonProperty("file") String file,
           @JsonProperty("email") String email,
