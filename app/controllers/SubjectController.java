@@ -66,7 +66,7 @@ public class SubjectController extends Controller {
         }, executionContext.current());
     }
 
-    @With(SessionManager.class)
+//    @With(SessionManager.class)
     public CompletionStage<Result> getAllSubjects() {
         return subjectModule.getAll().thenApplyAsync(data -> {
             // This is the HTTP rendering thread context
