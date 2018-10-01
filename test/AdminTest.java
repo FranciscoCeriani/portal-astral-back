@@ -52,8 +52,8 @@ public class AdminTest {
         admin.email = "newEmail";
         insertAdmin(admin);
         result = getAllAdmins();
-        List<Admin> professors = readValue(result, new TypeReference<List<Admin>>(){});
-        assertEquals(2, professors.size());
+        List<Admin> admins = readValue(result, new TypeReference<List<Admin>>(){});
+        assertEquals(2, admins.size());
     }
 
     @Test
@@ -65,8 +65,8 @@ public class AdminTest {
         result = deleteAdmin(id);
         assertEquals(200, result.status());
         result = getAllAdmins();
-        List<Admin> professors = readValue(result, new TypeReference<List<Admin>>(){});
-        assertEquals(0, professors.size());
+        List<Admin> admins = readValue(result, new TypeReference<List<Admin>>(){});
+        assertEquals(0, admins.size());
 
         result = deleteAdmin("fake-id");
         assertEquals(404, result.status());
