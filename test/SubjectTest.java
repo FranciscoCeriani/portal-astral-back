@@ -57,11 +57,22 @@ public class SubjectTest {
         result = insertSubject(subject);
         assertEquals(201, result.status());
 
+        subject.requiredSubjects.add("fake-subject");
+        result = insertSubject(subject);
+        assertEquals(409, result.status());
+
+        requiredSubjects.remove(0);
+        requiredSubjects.add(id);
+        Subject subject2 = new Subject("analisis", 1, requiredSubjects, students);
+        result = insertSubject(subject2);
+        assertEquals(201, result.status());
+
         result = getAllSubjects();
         List<Subject> subjects = readValue(result, new TypeReference<List<Subject>>(){});
-        assertEquals(2, subjects.size());
+        assertEquals(3, subjects.size());
         assertEquals(subjects.get(0).subjectName, "lab2");
         assertEquals(subjects.get(1).subjectName, "lab3");
+        assertEquals(subjects.get(2).subjectName, "analisis");
     }
 
     @Test
