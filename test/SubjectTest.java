@@ -14,13 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 import static play.test.Helpers.*;
-import static play.test.Helpers.GET;
-import static play.test.Helpers.route;
 
 public class SubjectTest {
 
@@ -38,104 +35,81 @@ public class SubjectTest {
 
     @Test
     public void insertTest() throws Exception {
-
-        Subject subject = new Subject("name", 0, new ArrayList<>(), new ArrayList<>());
+        ArrayList<String> requiredSubjects = new ArrayList<>();
+        ArrayList<Student> students = new ArrayList<>();
+        Subject subject = new Subject("lab2", 3, requiredSubjects, students);
 
         Result result = insertSubject(subject);
         assertEquals(201, result.status());
 
         String id = contentAsString(result);
         assertThat(id, is(notNullValue()));
-
         result = insertSubject(subject);
         assertEquals(409, result.status());
 
         result = getSubject(id);
         subject.id = id;
-
         Subject retrieved = readValue(result, new TypeReference<Subject>(){});
-
         assertThat(subject, samePropertyValuesAs(retrieved));
 
-        subject.subjectName = "newName";
-        insertSubject(subject);
+        subject.subjectName = "lab3";
+        subject.careerYear = 4;
+        result = insertSubject(subject);
+        assertEquals(201, result.status());
+
+        subject.requiredSubjects.add("fake-subject");
+        result = insertSubject(subject);
+        assertEquals(409, result.status());
+
+        requiredSubjects.remove(0);
+        requiredSubjects.add(id);
+        Subject subject2 = new Subject("analisis", 1, requiredSubjects, students);
+        result = insertSubject(subject2);
+        assertEquals(201, result.status());
 
         result = getAllSubjects();
-
         List<Subject> subjects = readValue(result, new TypeReference<List<Subject>>(){});
-        assertEquals(2, subjects.size());
+        assertEquals(3, subjects.size());
+        assertEquals(subjects.get(0).subjectName, "lab2");
+        assertEquals(subjects.get(1).subjectName, "lab3");
+        assertEquals(subjects.get(2).subjectName, "analisis");
     }
 
     @Test
     public void deleteTest() throws Exception {
+        ArrayList<String> requiredSubjects = new ArrayList<>();
+        ArrayList<Student> students = new ArrayList<>();
+        Subject subject = new Subject("lab2", 3, requiredSubjects, students);
 
-        Subject subject = new Subject("name", 0, new ArrayList<>(), new ArrayList<>());
         Result result = insertSubject(subject);
-
         String id = contentAsString(result);
+        subject.subjectName = "lab3";
+        subject.careerYear = 4;
+        result = insertSubject(subject);
+        String id2 = contentAsString(result);
+
+        result = getAllSubjects();
+        List<Subject> subjects = readValue(result, new TypeReference<List<Subject>>(){});
+        assertEquals(2, subjects.size());
 
         result = deleteSubject(id);
         assertEquals(200, result.status());
 
-        result = getAllSubjects();
-        List<Subject> subjects = readValue(result, new TypeReference<List<Subject>>(){});
-        assertEquals(0, subjects.size());
-
-        result = deleteSubject("fake-id");
+        result = deleteSubject(id);
         assertEquals(404, result.status());
-    }
 
-    @Test
-    public void updateTest() throws Exception {
-        Subject subject = new Subject("name", 0, new ArrayList<>(), new ArrayList<>());
-        Result result = insertSubject(subject);
+        result = getAllSubjects();
+        subjects = readValue(result, new TypeReference<List<Subject>>(){});
+        assertEquals(1, subjects.size());
 
-        String id = contentAsString(result);
-
-        subject.subjectName = "newName";
-        result = updateSubject(subject, id);
+        result = deleteSubject(id2);
         assertEquals(200, result.status());
 
-        result = getSubject(id);
-        Subject retrieved = readValue(result, new TypeReference<Subject>(){});
-
-        assertEquals("newName", retrieved.subjectName);
-
-        result = updateSubject(subject, "fake-id");
-        assertEquals(400, result.status());
+        result = getAllSubjects();
+        subjects = readValue(result, new TypeReference<List<Subject>>(){});
+        assertEquals(0, subjects.size());
     }
 
-    @Test
-    public void insertStudentTest() throws Exception {
-        Subject subject = new Subject("name", 0, new ArrayList<>(), new ArrayList<>());
-        Result result = insertSubject(subject);
-
-        String subjectId = contentAsString(result);
-
-        Student student = new Student();
-
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method(POST)
-                .uri("/student")
-                .bodyJson(Json.toJson(student));
-
-        result = route(application, request);
-        assertEquals(201, result.status());
-
-        student.id = contentAsString(result);
-
-        request = Helpers.fakeRequest()
-                .method(POST)
-                .uri("/subject/" + subjectId)
-                .bodyJson(Json.toJson(student));
-
-        result = route(application, request);
-        assertEquals(200, result.status());
-
-        Subject retrieved = readValue(result, new TypeReference<Subject>(){});
-
-        assertThat(student, samePropertyValuesAs(retrieved.students.get(0)));
-    }
 
     private Result insertSubject(Subject subject) {
         Http.RequestBuilder request = Helpers.fakeRequest()
@@ -146,14 +120,6 @@ public class SubjectTest {
         return route(application, request);
     }
 
-    private Result updateSubject(Subject subject, String id) {
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method(PUT)
-                .uri("/subject/" + id)
-                .bodyJson(Json.toJson(subject));
-
-        return route(application, request);
-    }
 
     private Result deleteSubject(String id) {
         Http.RequestBuilder request = Helpers.fakeRequest()
