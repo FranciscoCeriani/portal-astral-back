@@ -16,8 +16,8 @@ create table admin (
 
 create table course (
   id                            varchar(255) not null,
-  start_time                    timestamp,
-  end_time                      timestamp,
+  start_time                    varchar(255),
+  end_time                      varchar(255),
   subject_id                    varchar(255),
   constraint pk_course primary key (id)
 );

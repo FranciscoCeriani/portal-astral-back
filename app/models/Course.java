@@ -13,10 +13,10 @@ import java.util.List;
 public class Course extends BaseModel {
 
     @Constraints.Required
-    public DateTime startTime;
+    public String startTime;
 
     @Constraints.Required
-    public DateTime endTime;
+    public String endTime;
 
     @ManyToOne
     public Subject subject;
@@ -25,13 +25,13 @@ public class Course extends BaseModel {
     public List<DictationHours> schedule;
 
     public Course() {
-        this.startTime = new DateTime();
-        this.endTime = new DateTime();
+        this.startTime = "";
+        this.endTime = "";
         this.subject = new Subject();
         this.schedule = new ArrayList<>();
     }
 
-    public Course(DateTime startTime, DateTime endTime, Subject subject, List<DictationHours> schedule) {
+    public Course(String startTime, String endTime, Subject subject, List<DictationHours> schedule) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.subject = subject;
