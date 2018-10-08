@@ -10,10 +10,10 @@ import repository.AdminModule;
 import scala.util.Failure;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-
 public class AdminController extends Controller {
     private final HttpExecutionContext executionContext;
     private final AdminModule adminModule;
