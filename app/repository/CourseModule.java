@@ -1,10 +1,12 @@
 package repository;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.ebean.DuplicateKeyException;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Transaction;
 import models.Course;
+import models.Student;
 import org.springframework.beans.BeanUtils;
 import play.db.ebean.EbeanConfig;
 import scala.util.Failure;
@@ -12,10 +14,7 @@ import scala.util.Success;
 import scala.util.Try;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -112,6 +111,40 @@ public class CourseModule implements IModule<Course> {
             } finally {
                 txn.end();
             }
+        }, executionContext);
+    }
+
+    /**
+     * Updates the enrolled students in a course.
+     *
+     * @param studentIDIterator An iterator with the ids of all the students to be enrolled in the course.
+     * @param courseID The course's id.
+     * @return An optional with a course if all enrollments were successful. An empty optional if any enrollment
+     * failed (if this happens, no enrollment is registered).
+     */
+    public CompletionStage<Optional<Course>> addStudentsToCourse(Iterator<JsonNode> studentIDIterator, String courseID) {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Optional<Course> value = Optional.empty();
+            try {
+                Course course = ebeanServer.find(Course.class).setId(courseID).findOne();
+                if (course != null) {
+                    while (studentIDIterator.hasNext()) {
+                        Student student = ebeanServer.find(Student.class)
+                                .setId(studentIDIterator.next().textValue())
+                                .findOne();
+                        if (student != null) {
+                            if (!course.enrolled.contains(student)) course.enrolled.add(student);
+                        } else return value;
+                    }
+                    course.update();
+                    txn.commit();
+                    value = Optional.of(course);
+                }
+            } finally {
+                txn.end();
+            }
+            return value;
         }, executionContext);
     }
 }

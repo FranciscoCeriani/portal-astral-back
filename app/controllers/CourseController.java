@@ -10,6 +10,9 @@ import repository.CourseModule;
 import scala.util.Failure;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 public class CourseController extends Controller {
@@ -80,6 +83,38 @@ public class CourseController extends Controller {
         return courseModule.getAll().thenApplyAsync(data -> {
             // This is the HTTP rendering thread context
             return ok(Json.toJson(data));
+        }, executionContext.current());
+    }
+
+    /**
+     * Enrolls students to a course.
+     *
+     * The request's body must be a Json whose attributes are the ids of the students being enrolled.
+     * The names of the Json attributes are irrelevant, although its values must be valid student ids.
+     *
+     * @param id The course's id.
+     * @return
+     *
+     * 200 if all the students were enrolled correctly (if a student was already enrolled in the course,
+     * his enrollment is considered successful).
+     * In this case, all enrollments are completed successfully.
+     *
+     * 400 if one or more students could not be enrolled in the course (either because the student id
+     * was invalid or because no course with the provided id exists).
+     * If any enrollment fail, no enrollments are completed.
+     */
+    public CompletionStage<Result> enrollStudents(String id) {
+        JsonNode json = request().body().asJson();
+        Iterator<JsonNode> studentIdIterator = json.elements();
+        return courseModule.addStudentsToCourse(studentIdIterator, id).thenApplyAsync(data -> {
+            if (data.isPresent()) {
+                if (json.size() > 1) {
+                    return status(200, "Students enrolled successfully");
+                }
+                return status(200, "Student enrolled successfully");
+            } else {
+                return status(400, "Resource not found");
+            }
         }, executionContext.current());
     }
 }
