@@ -37,6 +37,12 @@ GET    /professor/:id         controllers.ProfessorController.getProfessor(id: S
 DELETE  /professor/:id      controllers.ProfessorController.deleteProfessor(id: String)
 PUT     /professor/:id      controllers.ProfessorController.updateProfessor(id: String)
 
+POST     /exam           controllers.ExamController.saveExam
+GET     /exam           controllers.ExamController.getAllExams
+GET     /exam/:id        controllers.ExamController.getExam(id: String)
+DELETE  /exam/:id        controllers.ExamController.deleteExam(id: String)
+PUT     /exam/:id      controllers.ExamController.updateExam(id: String)
+
 POST    /login    controllers.LoginController.validateUser
 GET    /logout/:id     controllers.LogoutController.logout(id: String)
 

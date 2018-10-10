@@ -36,6 +36,13 @@ create table dictation_hours (
   constraint pk_dictation_hours primary key (id)
 );
 
+create table exam (
+  id                            varchar(255) not null,
+  subject_id                    varchar(255),
+  date                          timestamp,
+  constraint pk_exam primary key (id)
+);
+
 create table professor (
   id                            varchar(255) not null,
   name                          varchar(255),
@@ -124,6 +131,8 @@ drop table if exists course;
 drop table if exists course_dictation_hours;
 
 drop table if exists dictation_hours;
+
+drop table if exists exam;
 
 drop table if exists professor;
 
