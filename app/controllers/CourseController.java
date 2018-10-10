@@ -108,10 +108,13 @@ public class CourseController extends Controller {
         Iterator<JsonNode> studentIdIterator = json.elements();
         return courseModule.addStudentsToCourse(studentIdIterator, id).thenApplyAsync(data -> {
             if (data.isPresent()) {
-                if (json.size() > 1) {
-                    return status(200, "Students enrolled successfully");
+                if (data.get() == 1) {
+                    return status(200, "Student enrolled successfully");
                 }
-                return status(200, "Student enrolled successfully");
+                if (data.get() == 0) {
+                    return status(200, "No students enrolled");
+                }
+                return status(200, data.get() + " students enrolled successfully");
             } else {
                 return status(400, "Resource not found");
             }

@@ -119,13 +119,14 @@ public class CourseModule implements IModule<Course> {
      *
      * @param studentIDIterator An iterator with the ids of all the students to be enrolled in the course.
      * @param courseID The course's id.
-     * @return An optional with a course if all enrollments were successful. An empty optional if any enrollment
-     * failed (if this happens, no enrollment is registered).
+     * @return An optional with an integer (the amount of students enrolled) if all enrollments were successful.
+     * An empty optional if any enrollment failed (if this happens, no enrollment is registered).
      */
-    public CompletionStage<Optional<Course>> addStudentsToCourse(Iterator<JsonNode> studentIDIterator, String courseID) {
+    public CompletionStage<Optional<Integer>> addStudentsToCourse(Iterator<JsonNode> studentIDIterator, String courseID) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
-            Optional<Course> value = Optional.empty();
+            Optional<Integer> value = Optional.empty();
+            int enrollments = 0;
             try {
                 Course course = ebeanServer.find(Course.class).setId(courseID).findOne();
                 if (course != null) {
@@ -134,12 +135,15 @@ public class CourseModule implements IModule<Course> {
                                 .setId(studentIDIterator.next().textValue())
                                 .findOne();
                         if (student != null) {
-                            if (!course.enrolled.contains(student)) course.enrolled.add(student);
+                            if (!course.enrolled.contains(student)){
+                                course.enrolled.add(student);
+                                enrollments++;
+                            }
                         } else return value;
                     }
                     course.update();
                     txn.commit();
-                    value = Optional.of(course);
+                    value = Optional.of(enrollments);
                 }
             } finally {
                 txn.end();
