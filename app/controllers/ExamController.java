@@ -1,31 +1,50 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import models.Course;
 import models.Exam;
+import org.joda.time.DateTime;
 import play.libs.Json;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Result;
+import repository.CourseModule;
 import repository.ExamModule;
 import scala.util.Failure;
 
 import javax.inject.Inject;
+import java.util.Iterator;
 import java.util.concurrent.CompletionStage;
 
 public class ExamController extends Controller {
     private final HttpExecutionContext executionContext;
     private final ExamModule examModule;
+    private final CourseModule courseModule;
 
     @Inject
-    public ExamController(HttpExecutionContext executionContext, ExamModule examModule) {
+    public ExamController(HttpExecutionContext executionContext, ExamModule examModule, CourseModule courseModule) {
         this.executionContext = executionContext;
         this.examModule = examModule;
+        this.courseModule = courseModule;
     }
 
     public CompletionStage<Result> saveExam() {
         JsonNode jsonNode = request().body().asJson();
-        Exam exam = Json.fromJson(jsonNode, Exam.class);
+        Iterator<JsonNode> iterator = jsonNode.elements();
+        String courseID = iterator.next().textValue();
+        DateTime date = DateTime.parse(iterator.next().textValue());
+        Course course;
+        if(courseModule.get(courseID).toCompletableFuture().join().isPresent()){
+            course = courseModule.get(courseID).toCompletableFuture().join().get();
+        }
+        else {
+            course = null;
+        }
+        Exam exam = new Exam(course, date);
         return examModule.insert(exam).thenApplyAsync(data -> {
+            if(exam.course == null){
+                return status(404, "Course not found");
+            }
             if(data.isSuccess()) {
                 return status(201, data.get());
             }
@@ -48,8 +67,21 @@ public class ExamController extends Controller {
 
     public CompletionStage<Result> updateExam(String id) {
         JsonNode jsonNode = request().body().asJson();
-        Exam exam = Json.fromJson(jsonNode, Exam.class);
+        Iterator<JsonNode> iterator = jsonNode.elements();
+        String courseID = iterator.next().textValue();
+        DateTime date = DateTime.parse(iterator.next().textValue());
+        Course course;
+        if(courseModule.get(courseID).toCompletableFuture().join().isPresent()){
+            course = courseModule.get(courseID).toCompletableFuture().join().get();
+        }
+        else {
+            course = null;
+        }
+        Exam exam = new Exam(course, date);
         return examModule.update(id, exam).thenApplyAsync(data -> {
+            if(exam.course == null){
+                return status(404, "Course not found");
+            }
             if (data.isPresent()){
                 if(data.get()){
                     return status(201, "Updated successfully");

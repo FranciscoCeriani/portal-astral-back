@@ -10,18 +10,18 @@ import javax.persistence.ManyToOne;
 public class Exam extends BaseModel {
 
     @ManyToOne
-    public String subjectId;
+    public Course course;
 
     @Constraints.Required
     public DateTime date;
 
     public Exam() {
-        subjectId= "";
+        course= new Course();
         date = new DateTime();
     }
 
-    public Exam(String subjectId, DateTime date) {
-        this.subjectId= subjectId;
+    public Exam(Course course, DateTime date) {
+        this.course= course;
         this.date = date;
     }
 
