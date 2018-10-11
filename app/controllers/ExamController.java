@@ -28,6 +28,14 @@ public class ExamController extends Controller {
         this.courseModule = courseModule;
     }
 
+    /**
+     * Recieves a String courseID and a String date in the body of the request
+     * the String date needs to be in format YYYY-MM-DDTHH:MM to be parsed to JodaTime
+     * Then it checks if the courseID exists or not and creates a new Exam with those attributes
+     * Then it inserts it into the database
+     * @return 404 if the Course is not found, 409 if there was an error inserting into database and
+     * 201 if it was a success.
+     */
     public CompletionStage<Result> saveExam() {
         JsonNode jsonNode = request().body().asJson();
         Iterator<JsonNode> iterator = jsonNode.elements();
