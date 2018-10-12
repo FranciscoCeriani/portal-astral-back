@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import models.Course;
 import models.Exam;
 import org.joda.time.DateTime;
+import org.joda.time.IllegalFieldValueException;
 import play.libs.Json;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
@@ -40,7 +41,13 @@ public class ExamController extends Controller {
         JsonNode jsonNode = request().body().asJson();
         Iterator<JsonNode> iterator = jsonNode.elements();
         String courseID = iterator.next().textValue();
-        DateTime date = DateTime.parse(iterator.next().textValue());
+        DateTime date;
+        try{
+             date = DateTime.parse(iterator.next().textValue());
+        }
+        catch (IllegalFieldValueException e){
+             date = null;
+        }
         Course course;
         if(courseModule.get(courseID).toCompletableFuture().join().isPresent()){
             course = courseModule.get(courseID).toCompletableFuture().join().get();
@@ -52,6 +59,9 @@ public class ExamController extends Controller {
         return examModule.insert(exam).thenApplyAsync(data -> {
             if(exam.course == null){
                 return status(404, "Course not found");
+            }
+            if(exam.date ==null){
+                return status(400, "Invalid Date");
             }
             if(data.isSuccess()) {
                 return status(201, data.get());
@@ -77,7 +87,13 @@ public class ExamController extends Controller {
         JsonNode jsonNode = request().body().asJson();
         Iterator<JsonNode> iterator = jsonNode.elements();
         String courseID = iterator.next().textValue();
-        DateTime date = DateTime.parse(iterator.next().textValue());
+        DateTime date;
+        try{
+            date = DateTime.parse(iterator.next().textValue());
+        }
+        catch (IllegalFieldValueException e){
+            date = null;
+        }
         Course course;
         if(courseModule.get(courseID).toCompletableFuture().join().isPresent()){
             course = courseModule.get(courseID).toCompletableFuture().join().get();
@@ -89,6 +105,9 @@ public class ExamController extends Controller {
         return examModule.update(id, exam).thenApplyAsync(data -> {
             if(exam.course == null){
                 return status(404, "Course not found");
+            }
+            if(exam.date ==null){
+                return status(400, "Invalid Date");
             }
             if (data.isPresent()){
                 if(data.get()){
