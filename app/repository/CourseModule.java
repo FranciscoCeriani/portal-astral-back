@@ -120,7 +120,7 @@ public class CourseModule implements IModule<Course> {
      * @param studentIDIterator An iterator with the ids of all the students to be enrolled in the course.
      * @param courseID The course's id.
      * @return An optional with an integer (the amount of students enrolled) if all enrollments were successful.
-     * An empty optional if any enrollment failed (if this happens, no enrollment is registered).
+     * An empty optional if any enrollment failed (if this happens, no enrollments are registered).
      */
     public CompletionStage<Optional<Integer>> addStudentsToCourse(Iterator<JsonNode> studentIDIterator, String courseID) {
         return supplyAsync(() -> {
@@ -144,6 +144,44 @@ public class CourseModule implements IModule<Course> {
                     course.update();
                     txn.commit();
                     value = Optional.of(enrollments);
+                }
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
+    }
+
+    /**
+     * Updates the enrolled students in a course.
+     *
+     * @param studentIDIterator An iterator with the ids of all the students to be removed from the course.
+     * @param courseID The course's id.
+     * @return An optional with an integer (the amount of students removed) if all removals were successful.
+     * An empty optional if any removal failed (if this happens, no removals are registered).
+     */
+    public CompletionStage<Optional<Integer>> removeStudentsFromCourse(Iterator<JsonNode> studentIDIterator, String courseID) {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Optional<Integer> value = Optional.empty();
+            int removals = 0;
+            try {
+                Course course = ebeanServer.find(Course.class).setId(courseID).findOne();
+                if (course != null) {
+                    while (studentIDIterator.hasNext()) {
+                        Student student = ebeanServer.find(Student.class)
+                                .setId(studentIDIterator.next().textValue())
+                                .findOne();
+                        if (student != null) {
+                            if (course.enrolled.contains(student)){
+                                course.enrolled.remove(student);
+                                removals++;
+                            }
+                        } else return value;
+                    }
+                    course.update();
+                    txn.commit();
+                    value = Optional.of(removals);
                 }
             } finally {
                 txn.end();

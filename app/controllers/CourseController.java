@@ -101,7 +101,7 @@ public class CourseController extends Controller {
      *
      * 400 if one or more students could not be enrolled in the course (either because the student id
      * was invalid or because no course with the provided id exists).
-     * If any enrollment fail, no enrollments are completed.
+     * If any enrollment fails, no enrollments are completed.
      */
     public CompletionStage<Result> enrollStudents(String id) {
         JsonNode json = request().body().asJson();
@@ -115,6 +115,41 @@ public class CourseController extends Controller {
                     return status(200, "No students enrolled");
                 }
                 return status(200, data.get() + " students enrolled successfully");
+            } else {
+                return status(400, "Resource not found");
+            }
+        }, executionContext.current());
+    }
+
+    /**
+     * Removes students from a course.
+     *
+     * The request's body must be a Json whose attributes are the ids of the students being enrolled.
+     * The names of the Json attributes are irrelevant, although its values must be valid student ids.
+     *
+     * @param id The course's id.
+     * @return
+     *
+     * 200 if all the students were removed correctly (if a student wasn't enrolled in the course,
+     * his removal is considered successful).
+     * In this case, all removals are completed successfully.
+     *
+     * 400 if one or more students could not be removed from the course (either because the student id
+     * was invalid or because no course with the provided id exists).
+     * If any removal fails, no removals are completed.
+     */
+    public CompletionStage<Result> removeStudents(String id) {
+        JsonNode json = request().body().asJson();
+        Iterator<JsonNode> studentIdIterator = json.elements();
+        return courseModule.removeStudentsFromCourse(studentIdIterator, id).thenApplyAsync(data -> {
+            if (data.isPresent()) {
+                if (data.get() == 1) {
+                    return status(200, "Student removed successfully");
+                }
+                if (data.get() == 0) {
+                    return status(200, "No students removed");
+                }
+                return status(200, data.get() + " students removed successfully");
             } else {
                 return status(400, "Resource not found");
             }
