@@ -1,6 +1,7 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import models.Course;
 import models.Exam;
 import org.joda.time.DateTime;
@@ -40,7 +41,7 @@ public class ExamController extends Controller {
     public CompletionStage<Result> saveExam() {
         JsonNode jsonNode = request().body().asJson();
         Iterator<JsonNode> iterator = jsonNode.elements();
-        String courseID = iterator.next().textValue();
+        String courseID = iterator.next().get("id").toString().replace("\"","");
         DateTime date;
         try{
              date = DateTime.parse(iterator.next().textValue());
