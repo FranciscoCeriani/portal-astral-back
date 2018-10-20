@@ -13,14 +13,14 @@ public class Exam extends BaseModel {
     public Course course;
 
     @Constraints.Required
-    public DateTime date;
+    public String date;
 
     public Exam() {
         course= new Course();
-        date = new DateTime();
+        date = "";
     }
 
-    public Exam(Course course, DateTime date) {
+    public Exam(Course course, String date) {
         this.course= course;
         this.date = date;
     }

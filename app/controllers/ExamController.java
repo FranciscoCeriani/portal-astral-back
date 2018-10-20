@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import models.Course;
 import models.Exam;
-import org.joda.time.DateTime;
 import org.joda.time.IllegalFieldValueException;
 import play.libs.Json;
 import play.libs.concurrent.HttpExecutionContext;
@@ -42,9 +41,9 @@ public class ExamController extends Controller {
         JsonNode jsonNode = request().body().asJson();
         Iterator<JsonNode> iterator = jsonNode.elements();
         String courseID = iterator.next().get("id").toString().replace("\"","");
-        DateTime date;
+        String date;
         try{
-             date = DateTime.parse(iterator.next().textValue());
+             date = iterator.next().textValue();
         }
         catch (IllegalFieldValueException e){
              date = null;
@@ -88,9 +87,9 @@ public class ExamController extends Controller {
         JsonNode jsonNode = request().body().asJson();
         Iterator<JsonNode> iterator = jsonNode.elements();
         String courseID = iterator.next().textValue();
-        DateTime date;
+        String date;
         try{
-            date = DateTime.parse(iterator.next().textValue());
+            date = iterator.next().textValue();
         }
         catch (IllegalFieldValueException e){
             date = null;
