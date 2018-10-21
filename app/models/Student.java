@@ -1,5 +1,6 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
@@ -24,6 +25,10 @@ public class Student extends User{
 
     @Constraints.Required
     public String address;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "enrolled")
+    public List<Course> courses;
 
     public Student(){
         name = "";
