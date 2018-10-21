@@ -15,6 +15,9 @@ GET     /course/:id        controllers.CourseController.getCourse(id: String)
 DELETE  /course/:id        controllers.CourseController.deleteCourse(id: String)
 PUT     /course/:id      controllers.CourseController.updateCourse(id: String)
 
+POST    /enrollStudent/:id         controllers.CourseController.enrollStudents(id: String)
+DELETE  /removeStudent/:id         controllers.CourseController.removeStudents(id: String)
+
 POST    /subject            controllers.SubjectController.saveSubject
 POST    /subject/:id        controllers.SubjectController.saveStudentToSubject(id :String)
 GET     /subject            controllers.SubjectController.getAllSubjects
@@ -36,6 +39,20 @@ GET    /professor          controllers.ProfessorController.getAllProfessors
 GET    /professor/:id         controllers.ProfessorController.getProfessor(id: String)
 DELETE  /professor/:id      controllers.ProfessorController.deleteProfessor(id: String)
 PUT     /professor/:id      controllers.ProfessorController.updateProfessor(id: String)
+
+
+POST     /exam           controllers.ExamController.saveExam
+GET     /exam           controllers.ExamController.getAllExams
+GET     /exam/:id        controllers.ExamController.getExam(id: String)
+DELETE  /exam/:id        controllers.ExamController.deleteExam(id: String)
+PUT     /exam/:id      controllers.ExamController.updateExam(id: String)
+
+POST    /career            controllers.CareerController.saveCareer
+GET     /career            controllers.CareerController.getAllCareers
+GET     /career/:id        controllers.CareerController.getCareer(id :String)
+PUT     /career/:id        controllers.CareerController.updateCareer(id: String)
+DELETE  /career/:id        controllers.CareerController.deleteCareer(id :String)
+
 
 POST    /login    controllers.LoginController.validateUser
 GET    /logout/:id     controllers.LogoutController.logout(id: String)

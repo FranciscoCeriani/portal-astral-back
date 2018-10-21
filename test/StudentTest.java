@@ -34,8 +34,7 @@ public class StudentTest {
 
     @Test
     public void insertTest() throws Exception {
-        Optional<String> optionalAddress = Optional.empty();
-        Student student = new Student("name", "lastName", "file", "email", "password", "birthday", "identificationType", "identification", optionalAddress);
+        Student student = new Student("name", "lastName", "file", "email", "password", "birthday", "identificationType", "identification", "address");
 
         Result result = insertStudent(student);
         assertEquals(201, result.status());
@@ -59,8 +58,7 @@ public class StudentTest {
 
     @Test
     public void deleteTest() throws Exception {
-        Optional<String> optionalAddress = Optional.empty();
-        Student student = new Student("name", "lastName", "file", "email", "password", "birthday", "identificationType", "identification", optionalAddress);
+        Student student = new Student("name", "lastName", "file", "email", "password", "birthday", "identificationType", "identification", "address");
 
         Result result = insertStudent(student);
         String id = contentAsString(result);
@@ -79,10 +77,10 @@ public class StudentTest {
     @Test
     public void updateTest() throws Exception {
         Optional<String> optionalAddress = Optional.empty();
-        Student student = new Student("name", "lastName", "file", "email", "password", "birthday", "idType", "id", optionalAddress);
+        Student student = new Student("name", "lastName", "file", "email", "password", "birthday", "idType", "id", "address");
         Result result = insertStudent(student);
         String id = contentAsString(result);
-        Student newStudent = new Student("name2", "lastName2", "file", "email", "password", "birthday", "idType", "id", optionalAddress);
+        Student newStudent = new Student("name2", "lastName2", "file", "email", "password", "birthday", "idType", "id", "address");
         result = updateStudent(id, newStudent);
         assertEquals(200, result.status());
         result = getStudent(id);

@@ -28,12 +28,25 @@ create table course_dictation_hours (
   constraint pk_course_dictation_hours primary key (course_id,dictation_hours_id)
 );
 
+create table course_student (
+  course_id                     varchar(255) not null,
+  student_id                    varchar(255) not null,
+  constraint pk_course_student primary key (course_id,student_id)
+);
+
 create table dictation_hours (
   id                            varchar(255) not null,
   day                           varchar(255),
   start_time                    timestamp,
   end_time                      timestamp,
   constraint pk_dictation_hours primary key (id)
+);
+
+create table exam (
+  id                            varchar(255) not null,
+  course_id                     varchar(255),
+  date                          timestamp,
+  constraint pk_exam primary key (id)
 );
 
 create table professor (
@@ -93,6 +106,17 @@ alter table course_dictation_hours add constraint fk_course_dictation_hours_cour
 create index ix_course_dictation_hours_dictation_hours on course_dictation_hours (dictation_hours_id);
 alter table course_dictation_hours add constraint fk_course_dictation_hours_dictation_hours foreign key (dictation_hours_id) references dictation_hours (id) on delete restrict on update restrict;
 
+
+create index ix_exam_course_id on exam (course_id);
+alter table exam add constraint fk_exam_course_id foreign key (course_id) references course (id) on delete restrict on update restrict;
+
+create index ix_course_student_course on course_student (course_id);
+alter table course_student add constraint fk_course_student_course foreign key (course_id) references course (id) on delete restrict on update restrict;
+
+create index ix_course_student_student on course_student (student_id);
+alter table course_student add constraint fk_course_student_student foreign key (student_id) references student (id) on delete restrict on update restrict;
+
+
 create index ix_subject_student_subject on subject_student (subject_id);
 alter table subject_student add constraint fk_subject_student_subject foreign key (subject_id) references subject (id) on delete restrict on update restrict;
 
@@ -111,6 +135,17 @@ drop index if exists ix_course_dictation_hours_course;
 alter table course_dictation_hours drop constraint if exists fk_course_dictation_hours_dictation_hours;
 drop index if exists ix_course_dictation_hours_dictation_hours;
 
+
+alter table exam drop constraint if exists fk_exam_course_id;
+drop index if exists ix_exam_course_id;
+
+alter table course_student drop constraint if exists fk_course_student_course;
+drop index if exists ix_course_student_course;
+
+alter table course_student drop constraint if exists fk_course_student_student;
+drop index if exists ix_course_student_student;
+
+
 alter table subject_student drop constraint if exists fk_subject_student_subject;
 drop index if exists ix_subject_student_subject;
 
@@ -123,7 +158,11 @@ drop table if exists course;
 
 drop table if exists course_dictation_hours;
 
+drop table if exists course_student;
+
 drop table if exists dictation_hours;
+
+drop table if exists exam;
 
 drop table if exists professor;
 

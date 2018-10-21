@@ -1,5 +1,6 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.joda.time.DateTime;
 import play.data.validation.Constraints;
 
@@ -24,11 +25,16 @@ public class Course extends BaseModel {
     @ManyToMany
     public List<DictationHours> schedule;
 
+    //@JsonIgnore
+    @ManyToMany
+    public List<Student> enrolled;
+
     public Course() {
         this.startTime = "";
         this.endTime = "";
         this.subject = new Subject();
         this.schedule = new ArrayList<>();
+        this.enrolled = new ArrayList<>();
     }
 
     public Course(String startTime, String endTime, Subject subject, List<DictationHours> schedule) {
@@ -36,5 +42,6 @@ public class Course extends BaseModel {
         this.endTime = endTime;
         this.subject = subject;
         this.schedule = schedule;
+        this.enrolled = new ArrayList<>();
     }
 }
