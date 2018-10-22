@@ -92,4 +92,21 @@ public class StudentController extends Controller {
         }, executionContext.current());
     }
 
+    /**
+     * Returns a json with a list of all the courses a student is enrolled in.
+     * @param id The student's id.
+     * @return A CompletionStage with the a Result.
+     * Result is ok if the student is found.
+     * Result is 404 if the student was not found
+     * In case the student is enrolled in no courses, returns a json of an empty list.
+     */
+    public CompletionStage<Result> getCourses(String id) {
+        return studentModule.getCourses(id).thenApplyAsync(data -> {
+            if(data.isPresent()){
+                return ok(Json.toJson(data.get()));
+            }else{
+                return status(404, "Resource not found");
+            }
+        }, executionContext.current());
+    }
 }
