@@ -4,7 +4,7 @@ import io.ebean.DuplicateKeyException;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Transaction;
-import models.Admin;
+import models.Exam;
 import org.springframework.beans.BeanUtils;
 import play.db.ebean.EbeanConfig;
 import scala.util.Failure;
@@ -19,28 +19,27 @@ import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
-public class AdminModule implements IModule<Admin>{
+public class ExamModule implements IModule<Exam> {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
 
     @Inject
-    public AdminModule(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext) {
+    public ExamModule(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
     }
-
     @Override
-    public CompletionStage<Optional<Boolean>> update(String id, Admin entity) {
+    public CompletionStage<Optional<Boolean>> update(String id, Exam exam) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             Optional<Boolean> value = Optional.of(false);
             try {
-                Admin savedAdmin = ebeanServer.find(Admin.class).setId(id).findOne();
-                if (savedAdmin != null) {
-                    entity.id = id;
-                    BeanUtils.copyProperties(entity, savedAdmin);
-                    savedAdmin.update();
+                Exam savedExam = ebeanServer.find(Exam.class).setId(id).findOne();
+                if (savedExam != null) {
+                    exam.id = id;
+                    BeanUtils.copyProperties(exam, savedExam);
+                    savedExam.update();
                     txn.commit();
                     value = Optional.of(true);
                 }
@@ -53,9 +52,9 @@ public class AdminModule implements IModule<Admin>{
 
     @Override
     public CompletionStage<Optional<Boolean>> delete(String id) {
-          return supplyAsync(() -> {
+        return supplyAsync(() -> {
             try {
-                final Optional<Admin> computerOptional = Optional.ofNullable(ebeanServer.find(Admin.class).setId(id).findOne());
+                final Optional<Exam> computerOptional = Optional.ofNullable(ebeanServer.find(Exam.class).setId(id).findOne());
                 if(computerOptional.isPresent()){
                     computerOptional.get().delete();
                     return Optional.of(true);
@@ -69,12 +68,12 @@ public class AdminModule implements IModule<Admin>{
     }
 
     @Override
-    public CompletionStage<Try<String>> insert(Admin entity) {
+    public CompletionStage<Try<String>> insert(Exam exam) {
         return supplyAsync(() -> {
             try {
-                entity.id = UUID.randomUUID().toString();
-                ebeanServer.insert(entity);
-                return new Success(entity.id);
+                exam.id = UUID.randomUUID().toString();
+                ebeanServer.insert(exam);
+                return new Success(exam.id);
             }catch (DuplicateKeyException e){
                 return new Failure(new Exception("Email already exists"));
             }
@@ -82,14 +81,14 @@ public class AdminModule implements IModule<Admin>{
     }
 
     @Override
-    public CompletionStage<Optional<Admin>> get(String id) {
+    public CompletionStage<Optional<Exam>> get(String id) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
-            Optional<Admin> value = Optional.empty();
+            Optional<Exam> value = Optional.empty();
             try {
-                Admin savedAdmin = ebeanServer.find(Admin.class).setId(id).findOne();
-                if (savedAdmin != null) {
-                    value = Optional.of(savedAdmin);
+                Exam savedExam = ebeanServer.find(Exam.class).setId(id).findOne();
+                if (savedExam != null) {
+                    value = Optional.of(savedExam);
                 }
             } finally {
                 txn.end();
@@ -98,13 +97,14 @@ public class AdminModule implements IModule<Admin>{
         }, executionContext);
     }
 
-    public CompletionStage<List<Admin>> getAll() {
+    @Override
+    public CompletionStage<List<Exam>> getAll() {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
-            List<Admin> value;
+            List<Exam> value;
             try {
-                List<Admin> savedAdmins = ebeanServer.find(Admin.class).findList();
-                value = savedAdmins;
+                List<Exam> savedExams = ebeanServer.find(Exam.class).findList();
+                value = savedExams;
             } finally {
                 txn.end();
             }
@@ -112,4 +112,3 @@ public class AdminModule implements IModule<Admin>{
         }, executionContext);
     }
 }
-

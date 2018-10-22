@@ -1,5 +1,6 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
@@ -23,7 +24,11 @@ public class Student extends User{
     public String identification;
 
     @Constraints.Required
-    public Optional<String> address;
+    public String address;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "enrolled")
+    public List<Course> courses;
 
     public Student(){
         name = "";
@@ -34,10 +39,10 @@ public class Student extends User{
         birthday = "";
         identificationType = "";
         identification = "";
-        address = Optional.empty();
+        address = "";
     }
 
-    public Student(String name, String lastName, String file, String email, String password, String birthday, String identificationType, String identification, Optional<String> address) {
+    public Student(String name, String lastName, String file, String email, String password, String birthday, String identificationType, String identification, String address) {
         this.name = name;
         this.lastName = lastName;
         this.file = file;

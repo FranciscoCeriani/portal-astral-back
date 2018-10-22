@@ -9,16 +9,24 @@ GET     /student/:id        controllers.StudentController.getStudent(id: String)
 DELETE  /student/:id        controllers.StudentController.deleteStudent(id: String)
 PUT     /student/:id      controllers.StudentController.updateStudent(id: String)
 
+POST     /course           controllers.CourseController.saveCourse
+GET     /course           controllers.CourseController.getAllCourses
+GET     /course/:id        controllers.CourseController.getCourse(id: String)
+DELETE  /course/:id        controllers.CourseController.deleteCourse(id: String)
+PUT     /course/:id      controllers.CourseController.updateCourse(id: String)
+
+POST    /enrollStudent/:id         controllers.CourseController.enrollStudents(id: String)
+DELETE  /removeStudent/:id         controllers.CourseController.removeStudents(id: String)
+
 POST    /subject            controllers.SubjectController.saveSubject
 POST    /subject/:id        controllers.SubjectController.saveStudentToSubject(id :String)
-GET     /subject        controllers.SubjectController.getSubject(id :String)
+GET     /subject            controllers.SubjectController.getAllSubjects
 GET     /subject/:id        controllers.SubjectController.getSubject(id :String)
 PUT     /subject/:id        controllers.SubjectController.updateSubject(id: String)
 DELETE  /subject/:id        controllers.SubjectController.deleteSubject(id :String)
 
-
 POST    /correlative        controllers.SubjectController.saveRequiredSubject
-
+DELETE  /correlative      controllers.SubjectController.deleteRequiredSubject
 
 POST     /administrator      controllers.AdminController.saveAdmin
 GET     /administrator      controllers.AdminController.getAllAdmins
@@ -32,8 +40,22 @@ GET    /professor/:id         controllers.ProfessorController.getProfessor(id: S
 DELETE  /professor/:id      controllers.ProfessorController.deleteProfessor(id: String)
 PUT     /professor/:id      controllers.ProfessorController.updateProfessor(id: String)
 
+
+POST     /exam           controllers.ExamController.saveExam
+GET     /exam           controllers.ExamController.getAllExams
+GET     /exam/:id        controllers.ExamController.getExam(id: String)
+DELETE  /exam/:id        controllers.ExamController.deleteExam(id: String)
+PUT     /exam/:id      controllers.ExamController.updateExam(id: String)
+
+POST    /career            controllers.CareerController.saveCareer
+GET     /career            controllers.CareerController.getAllCareers
+GET     /career/:id        controllers.CareerController.getCareer(id :String)
+PUT     /career/:id        controllers.CareerController.updateCareer(id: String)
+DELETE  /career/:id        controllers.CareerController.deleteCareer(id :String)
+
+
+POST    /login    controllers.LoginController.validateUser
+GET    /logout/:id     controllers.LogoutController.logout(id: String)
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
-
-
-

@@ -2,7 +2,6 @@ package repository;
 
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
-import io.ebean.Model;
 import io.ebean.Transaction;
 import models.Student;
 import models.Subject;
@@ -126,10 +125,20 @@ public class SubjectModule implements IModule<Subject> {
 
     public CompletionStage<List<Subject>> getAll() {
         return supplyAsync(() -> {
-            return new ArrayList<>();
-        });
+            Transaction txn = ebeanServer.beginTransaction();
+            try {
+                List<Subject> allSubjects = ebeanServer.find(Subject.class).findList();
+                if (allSubjects != null) {
+                    return allSubjects;
+                } else {
+                    return new ArrayList<Subject>();
+                }
+            } finally {
+                txn.end();
+            }
+        }, executionContext);
     }
-
+  
     public CompletionStage<Optional<Subject>> addStudentToSubject(Student student, String subjectID) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
@@ -155,12 +164,33 @@ public class SubjectModule implements IModule<Subject> {
             try {
                 Subject requiredSubject = ebeanServer.find(Subject.class).setId(requiredSubjectID).findOne();
                 Subject subject = ebeanServer.find(Subject.class).setId(subjectID).findOne();
-                if (subject != null && requiredSubject != null) {
+                if (subject != null && requiredSubject != null && !checkRequiredSubjects(requiredSubject)) {
                     subject.addRequiredSubject(requiredSubjectID);
                     subject.update();
                     txn.commit();
                     value = Optional.of(subject);
                 }
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
+    }
+
+    public CompletionStage<Optional<Boolean>> deleteRequiredSubject(String subjectID, String requiredSubjectID) {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Optional<Boolean> value = Optional.of(false);
+            try {
+                Subject requiredSubject = ebeanServer.find(Subject.class).setId(requiredSubjectID).findOne();
+                Subject subject = ebeanServer.find(Subject.class).setId(subjectID).findOne();
+                if (subject != null && requiredSubject != null) {
+                    boolean result = subject.deleteRequiredSubject(requiredSubjectID);
+                    subject.update();
+                    txn.commit();
+                    value = Optional.of(result);
+                }
+
             } finally {
                 txn.end();
             }
