@@ -86,7 +86,7 @@ public class ExamController extends Controller {
     public CompletionStage<Result> updateExam(String id) {
         JsonNode jsonNode = request().body().asJson();
         Iterator<JsonNode> iterator = jsonNode.elements();
-        String courseID = iterator.next().textValue();
+        String courseID = iterator.next().get("id").toString().replace("\"","");
         String date;
         try{
             date = iterator.next().textValue();
