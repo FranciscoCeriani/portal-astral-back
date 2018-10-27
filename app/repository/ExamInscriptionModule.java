@@ -116,22 +116,23 @@ public class ExamInscriptionModule implements IModule<ExamInscription> {
         }, executionContext);
     }
 
-    public CompletionStage<Optional<Integer>> enrollStudentsToExam(Iterator<JsonNode> studentIdsIterator, String examId) {
+    public CompletionStage<Optional<List<String>>> enrollStudentsToExam(Iterator<JsonNode> studentIdsIterator, String examId) {
         return supplyAsync(() -> {
-            Optional<Integer> result = Optional.empty();
-            int successfulEnrollments = 0;
+            Optional<List<String>> result = Optional.empty();
+            List<String> inscriptionIds = new ArrayList<>();
             Exam exam = ebeanServer.find(Exam.class).setId(examId).findOne();
             Student student;
+            ExamInscription examInscription;
             if (exam != null) {
                 while (studentIdsIterator.hasNext()) {
                     student = ebeanServer.find(Student.class).setId(studentIdsIterator.next().textValue()).findOne();
                     if (student != null && !checkIfInscriptionExists(student, exam)) {
-                        insert(new ExamInscription(student, exam));
-                        successfulEnrollments++;
+                        examInscription = new ExamInscription(student, exam);
+                        insert(examInscription).thenApplyAsync(data -> inscriptionIds.add(data.get()));
                     }
                 }
             }
-            result = Optional.of(successfulEnrollments);
+            result = Optional.of(inscriptionIds);
             return result;
         }, executionContext);
     }
