@@ -86,13 +86,13 @@ public class MockDataModule {
 
             ExamInscription examInscription1 = new ExamInscription(student, exam1);
             examInscription1.id = UUID.randomUUID().toString();
-            examInscription1.result = Optional.of(9);
+            examInscription1.result = 9;
             ExamInscription examInscription2 = new ExamInscription(student, exam2);
             examInscription2.id = UUID.randomUUID().toString();
-            examInscription2.result = Optional.of(9);
+            examInscription2.result = 9;
             ExamInscription examInscription3 = new ExamInscription(student, exam3);
             examInscription3.id = UUID.randomUUID().toString();
-            examInscription3.result = Optional.of(9);
+            examInscription3.result = 9;
 
             Transaction txn = ebeanServer.beginTransaction();
             Optional<Boolean> result = Optional.of(false);
