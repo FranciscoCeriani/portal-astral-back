@@ -80,20 +80,6 @@ public class SubjectController extends Controller {
         }, executionContext.current());
     }
 
-    public CompletionStage<Result> saveStudentToSubject(String subjectId) {
-        JsonNode json = request().body().asJson();
-        Student student = Json.fromJson(json, Student.class);
-
-        return subjectModule.addStudentToSubject(student, subjectId).thenApplyAsync(data -> {
-            // This is the HTTP rendering thread context
-            if (data.isPresent()) {
-                return ok(Json.toJson(data));
-            } else {
-                return status(404, "Resource not found");
-            }
-        }, executionContext.current());
-    }
-
     public CompletionStage<Result> saveRequiredSubject() {
         JsonNode jsonNode = request().body().asJson();
         Iterator<JsonNode> ids = jsonNode.elements();

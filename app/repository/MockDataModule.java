@@ -33,18 +33,18 @@ public class MockDataModule {
             Student student = new Student("Esteban", "Quito", "file", "student@student.com", "student", "08/02/1998", "Crack", "Crack de Cracks", "Al fondo a la derecha");
             student.id = UUID.randomUUID().toString();
 
-            Subject subject1 = new Subject("Física I", 1, new ArrayList<>(), new ArrayList<>());
+            Subject subject1 = new Subject("Física I", 1, new ArrayList<>());
             subject1.id = UUID.randomUUID().toString();
-            Subject subject2 = new Subject("Análisis I", 1, new ArrayList<>(), new ArrayList<>());
+            Subject subject2 = new Subject("Análisis I", 1, new ArrayList<>());
             subject2.id = UUID.randomUUID().toString();
-            Subject subject3 = new Subject("Progeamación I", 1, new ArrayList<>(), new ArrayList<>());
+            Subject subject3 = new Subject("Progeamación I", 1, new ArrayList<>());
             subject3.id = UUID.randomUUID().toString();
 
-            Subject subject4 = new Subject("Física II", 2, new ArrayList<>(), new ArrayList<>());
+            Subject subject4 = new Subject("Física II", 2, new ArrayList<>());
             subject4.id = UUID.randomUUID().toString();
-            Subject subject5 = new Subject("Análisis II", 1, new ArrayList<>(), new ArrayList<>());
+            Subject subject5 = new Subject("Análisis II", 1, new ArrayList<>());
             subject5.id = UUID.randomUUID().toString();
-            Subject subject6 = new Subject("Progeamación II", 2, new ArrayList<>(), new ArrayList<>());
+            Subject subject6 = new Subject("Progeamación II", 2, new ArrayList<>());
             subject6.id = UUID.randomUUID().toString();
 
             subject4.requiredSubjects.add(subject1.id);
@@ -56,9 +56,6 @@ public class MockDataModule {
             subject6.requiredSubjects.add(subject2.id);
             subject6.requiredSubjects.add(subject1.id);
 
-            subject1.students.add(student);
-            subject2.students.add(student);
-            subject3.students.add(student);
 
             Career career = new Career("Ing. Informatica", new ArrayList<>(), new ArrayList<>());
             career.id = UUID.randomUUID().toString();

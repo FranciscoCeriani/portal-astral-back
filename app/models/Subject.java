@@ -21,21 +21,17 @@ public class Subject extends BaseModel {
     @DbJson
     public ArrayList<String> requiredSubjects;
 
-    @ManyToMany
-    public List<Student> students;
 
     public Subject() {
         subjectName = "";
         careerYear = 0;
         requiredSubjects = new ArrayList<>();
-        students = new ArrayList<>();
     }
 
-    public Subject(String subjectName, int careerYear, ArrayList<String> requiredSubjects, ArrayList<Student> students) {
+    public Subject(String subjectName, int careerYear, ArrayList<String> requiredSubjects) {
         this.subjectName = subjectName;
         this.careerYear = careerYear;
         this.requiredSubjects = requiredSubjects;
-        this.students = students;
     }
 
     public ArrayList<String> getRequiredSubjects() {
