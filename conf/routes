@@ -49,7 +49,7 @@ GET     /exam/:id        controllers.ExamController.getExam(id: String)
 DELETE  /exam/:id        controllers.ExamController.deleteExam(id: String)
 PUT     /exam/:id      controllers.ExamController.updateExam(id: String)
 
-POST     /examIns           controllers.ExamInscriptionController.saveExamInscription
+#POST     /examIns           controllers.ExamInscriptionController.saveExamInscription
 GET     /examIns           controllers.ExamInscriptionController.getAllExamInscriptions
 GET     /examIns/:id        controllers.ExamInscriptionController.getExamInscription(id: String)
 DELETE  /examIns/:id        controllers.ExamInscriptionController.deleteExamInscription(id: String)

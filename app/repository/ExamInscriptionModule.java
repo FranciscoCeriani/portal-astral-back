@@ -216,6 +216,8 @@ public class ExamInscriptionModule implements IModule<ExamInscription> {
         } finally {
             txn.end();
         }
+    }
+
     public CompletionStage<Optional<List<String>>> enrollStudentsToExam(Iterator<JsonNode> studentIdsIterator, String examId) {
         return supplyAsync(() -> {
             Optional<List<String>> result = Optional.empty();

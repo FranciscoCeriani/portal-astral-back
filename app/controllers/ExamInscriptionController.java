@@ -83,4 +83,20 @@ public class ExamInscriptionController extends Controller {
             return ok(Json.toJson(data));
         }, executionContext.current());
     }
+
+    //    Devuelve todos los ExamInscription pertenecientes a Student
+    public CompletionStage<Result> getAllExamStudent(String id) {
+        return examInscriptionModule.getAllExamStudent(id).thenApplyAsync(data -> {
+            // This is the HTTP rendering thread context
+            return ok(Json.toJson(data));
+        }, executionContext.current());
+    }
+
+    //    Devuelve todos los ExamInscription pertenecientes a Exam
+    public CompletionStage<Result> getAllExam(String id) {
+        return examInscriptionModule.getAllExam(id).thenApplyAsync(data -> {
+            // This is the HTTP rendering thread context
+            return ok(Json.toJson(data));
+        }, executionContext.current());
+    }
 }
