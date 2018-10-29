@@ -23,8 +23,8 @@ create table career (
 
 create table course (
   id                            varchar(255) not null,
-  start_time                    varchar(255),
-  end_time                      varchar(255),
+  start_date                    varchar(255),
+  end_date                      varchar(255),
   subject_id                    varchar(255),
   constraint pk_course primary key (id)
 );
@@ -60,6 +60,7 @@ create table exam_inscription (
   id                            varchar(255) not null,
   student_id                    varchar(255),
   exam_id                       varchar(255),
+  result                        integer,
   constraint pk_exam_inscription primary key (id)
 );
 
