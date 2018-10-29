@@ -49,6 +49,15 @@ GET     /exam/:id        controllers.ExamController.getExam(id: String)
 DELETE  /exam/:id        controllers.ExamController.deleteExam(id: String)
 PUT     /exam/:id      controllers.ExamController.updateExam(id: String)
 
+POST     /examIns           controllers.ExamInscriptionController.saveExamInscription
+GET     /examIns           controllers.ExamInscriptionController.getAllExamInscriptions
+GET     /examIns/:id        controllers.ExamInscriptionController.getExamInscription(id: String)
+DELETE  /examIns/:id        controllers.ExamInscriptionController.deleteExamInscription(id: String)
+PUT     /examIns/:id      controllers.ExamInscriptionController.updateExamInscription(id: String)
+
+GET     /getExamStudent/:id     controllers.ExamInscriptionController.getAllExamStudent(id: String)
+GET     /getExams/:id           controllers.ExamInscriptionController.getAllExam(id: String)
+
 POST    /career            controllers.CareerController.saveCareer
 GET     /career            controllers.CareerController.getAllCareers
 GET     /career/:id        controllers.CareerController.getCareer(id :String)
@@ -58,6 +67,8 @@ DELETE  /career/:id        controllers.CareerController.deleteCareer(id :String)
 
 POST    /login    controllers.LoginController.validateUser
 GET    /logout/:id     controllers.LogoutController.logout(id: String)
+
+GET     /init               controllers.MockDataController.initData()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
