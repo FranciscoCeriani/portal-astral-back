@@ -80,6 +80,10 @@ public class MockDataModule {
             exam2.id = UUID.randomUUID().toString();
             Exam exam3 = new Exam(course3, "16/5/2018");
             exam3.id = UUID.randomUUID().toString();
+            Exam exam4 = new Exam(course1, "4/6/2018");
+            exam4.id = UUID.randomUUID().toString();
+            Exam exam5 = new Exam(course1, "4/7/2018");
+            exam5.id = UUID.randomUUID().toString();
 
             ExamInscription examInscription1 = new ExamInscription(student, exam1);
             examInscription1.id = UUID.randomUUID().toString();
@@ -90,6 +94,12 @@ public class MockDataModule {
             ExamInscription examInscription3 = new ExamInscription(student, exam3);
             examInscription3.id = UUID.randomUUID().toString();
             examInscription3.result = 9;
+            ExamInscription examInscription4 = new ExamInscription(student, exam4);
+            examInscription4.id = UUID.randomUUID().toString();
+            examInscription4.result = 8;
+            ExamInscription examInscription5 = new ExamInscription(student, exam5);
+            examInscription5.id = UUID.randomUUID().toString();
+            examInscription5.result = 7;
 
             Transaction txn = ebeanServer.beginTransaction();
             Optional<Boolean> result = Optional.of(false);
@@ -110,9 +120,13 @@ public class MockDataModule {
                 ebeanServer.insert(exam1);
                 ebeanServer.insert(exam2);
                 ebeanServer.insert(exam3);
+                ebeanServer.insert(exam4);
+                ebeanServer.insert(exam5);
                 ebeanServer.insert(examInscription1);
                 ebeanServer.insert(examInscription2);
                 ebeanServer.insert(examInscription3);
+                ebeanServer.insert(examInscription4);
+                ebeanServer.insert(examInscription5);
 
                 result = Optional.of(true);
                 txn.commit();
