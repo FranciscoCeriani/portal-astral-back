@@ -7,6 +7,8 @@ import play.data.validation.Constraints;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.xml.bind.DatatypeConverter;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,10 +16,10 @@ import java.util.List;
 public class Course extends BaseModel {
 
     @Constraints.Required
-    public String startTime;
+    public String startDate;
 
     @Constraints.Required
-    public String endTime;
+    public String endDate;
 
     @ManyToOne
     public Subject subject;
@@ -30,16 +32,16 @@ public class Course extends BaseModel {
     public List<Student> enrolled;
 
     public Course() {
-        this.startTime = "";
-        this.endTime = "";
+        this.startDate = "";
+        this.endDate = "";
         this.subject = new Subject();
         this.schedule = new ArrayList<>();
         this.enrolled = new ArrayList<>();
     }
 
     public Course(String startTime, String endTime, Subject subject, List<DictationHours> schedule) {
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startDate = startTime;
+        this.endDate = endTime;
         this.subject = subject;
         this.schedule = schedule;
         this.enrolled = new ArrayList<>();

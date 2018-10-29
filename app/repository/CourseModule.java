@@ -7,6 +7,7 @@ import io.ebean.EbeanServer;
 import io.ebean.Transaction;
 import models.Course;
 import models.Student;
+import models.Subject;
 import org.springframework.beans.BeanUtils;
 import play.db.ebean.EbeanConfig;
 import scala.util.Failure;
@@ -14,6 +15,8 @@ import scala.util.Success;
 import scala.util.Try;
 
 import javax.inject.Inject;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
@@ -33,6 +36,20 @@ public class CourseModule implements IModule<Course> {
     public CompletionStage<Try<String>> insert(Course entity) {
         return supplyAsync(() -> {
             try {
+                if (entity.subject != null && entity.subject.id != null) {
+                    Subject subject = ebeanServer.find(Subject.class).setId(entity.subject.id).findOne();
+                    if (subject == null) {
+                        return new Failure(new Exception("The subject is not registered"));
+                    }
+                } else return new Failure(new Exception("The subject is not registered"));
+                if (entity.startDate.compareTo(entity.endDate) > 0) {
+                    return new Failure(new Exception("Course must end after it began"));
+                }
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                String today = df.format(new Date());
+                if (entity.startDate.compareTo(today) < 0) {
+                    return new Failure(new Exception("Start date has already passed"));
+                }
                 entity.id = UUID.randomUUID().toString();
                 ebeanServer.insert(entity);
                 return new Success(entity.id);
