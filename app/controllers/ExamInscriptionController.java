@@ -99,4 +99,18 @@ public class ExamInscriptionController extends Controller {
             return ok(Json.toJson(data));
         }, executionContext.current());
     }
+
+//    Add result
+    public CompletionStage<Result> addResult(String id) {
+        JsonNode jsonNode = request().body().asJson();
+        ExamInscription examInscription = Json.fromJson(jsonNode, ExamInscription.class);
+        return examInscriptionModule.addResult(id, examInscription).thenApplyAsync(data -> {
+            if (data.isPresent()) {
+                if (data.get()) {
+                    return ok("Result added");
+                }
+            }
+            return status(404, "ExamInscription to be updated not found");
+        }, executionContext.current());
+    }
 }

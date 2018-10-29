@@ -150,6 +150,30 @@ public class ExamInscriptionModule implements IModule<ExamInscription> {
         }, executionContext);
     }
 
+//    Add Result
+    public CompletionStage<Optional<Boolean>> addResult(String id, ExamInscription entity) {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Optional<Boolean> value = Optional.of(false);
+            try {
+                ExamInscription savedExamI = ebeanServer.find(ExamInscription.class).setId(id).findOne();
+                if (savedExamI != null) {
+                    entity.id = id;
+                    int auxResult = entity.result;
+                    BeanUtils.copyProperties(savedExamI, entity);
+                    entity.result = auxResult;
+                    BeanUtils.copyProperties(entity, savedExamI);
+                    savedExamI.update();
+                    txn.commit();
+                    value = Optional.of(true);
+                }
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
+    }
+
 //    Devuelve todos los ExamInscription pertenecientes a Student y Exam
     public CompletionStage<Optional<ExamInscription>> getExamIns(String idStudent, String idExam) {
         return supplyAsync(() -> {
