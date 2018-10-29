@@ -100,7 +100,15 @@ public class ExamInscriptionController extends Controller {
         }, executionContext.current());
     }
 
-//    Add result
+    //    Devuelve todos los ExamInscription pertenecientes a un Course
+    public CompletionStage<Result> getAllExamInscriptionByCourse(String id) {
+        return examInscriptionModule.getAllExamCourse(id).thenApplyAsync(data -> {
+            // This is the HTTP rendering thread context
+            return ok(Json.toJson(data));
+        }, executionContext.current());
+    }
+
+    //    Add result
     public CompletionStage<Result> addResult(String id) {
         JsonNode jsonNode = request().body().asJson();
         ExamInscription examInscription = Json.fromJson(jsonNode, ExamInscription.class);
