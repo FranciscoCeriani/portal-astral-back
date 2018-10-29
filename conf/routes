@@ -54,8 +54,8 @@ GET     /examIns/:id        controllers.ExamInscriptionController.getExamInscrip
 DELETE  /examIns/:id        controllers.ExamInscriptionController.deleteExamInscription(id: String)
 PUT     /examIns/:id      controllers.ExamInscriptionController.updateExamInscription(id: String)
 
-GET     /getExamStudent/:id     controllers.ExamInscriptionController.getAllExamStudent(id: String)
-GET     /getExams/:id           controllers.ExamInscriptionController.getAllExam(id: String)
+GET     /getExamInscriptionByStudent/:id     controllers.ExamInscriptionController.getAllExamStudent(id: String)
+GET     /getExamInscriptionByExam/:id           controllers.ExamInscriptionController.getAllExam(id: String)
 #get all examsInscription by course
 GET     /getExamInscriptionByCourse/:id      controllers.ExamInscriptionController.getAllExamInscriptionByCourse(id: String)
 
