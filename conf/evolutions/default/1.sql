@@ -133,9 +133,6 @@ alter table exam add constraint fk_exam_course_id foreign key (course_id) refere
 create index ix_exam_inscription_student_id on exam_inscription (student_id);
 alter table exam_inscription add constraint fk_exam_inscription_student_id foreign key (student_id) references student (id) on delete restrict on update restrict;
 
-create index ix_exam_inscription_exam_id on exam_inscription (exam_id);
-alter table exam_inscription add constraint fk_exam_inscription_exam_id foreign key (exam_id) references exam (id) on delete restrict on update restrict;
-
 create index ix_subject_student_subject on subject_student (subject_id);
 alter table subject_student add constraint fk_subject_student_subject foreign key (subject_id) references subject (id) on delete restrict on update restrict;
 
@@ -165,9 +162,6 @@ drop index if exists ix_exam_course_id;
 
 alter table exam_inscription drop constraint if exists fk_exam_inscription_student_id;
 drop index if exists ix_exam_inscription_student_id;
-
-alter table exam_inscription drop constraint if exists fk_exam_inscription_exam_id;
-drop index if exists ix_exam_inscription_exam_id;
 
 alter table subject_student drop constraint if exists fk_subject_student_subject;
 drop index if exists ix_subject_student_subject;
