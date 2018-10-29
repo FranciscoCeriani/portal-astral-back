@@ -25,7 +25,7 @@ public class Course extends BaseModel {
     @ManyToMany
     public List<DictationHours> schedule;
 
-    //@JsonIgnore
+    @JsonIgnore
     @ManyToMany
     public List<Student> enrolled;
 
