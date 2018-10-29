@@ -168,7 +168,7 @@ public class ExamInscriptionModule implements IModule<ExamInscription> {
         }, executionContext);
     }
 
-//    Add Result
+    //    Add Result
     public CompletionStage<Optional<Boolean>> addResult(String id, ExamInscription entity) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
