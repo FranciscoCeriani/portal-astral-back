@@ -56,6 +56,8 @@ PUT     /examIns/:id      controllers.ExamInscriptionController.updateExamInscri
 
 GET     /getExamStudent/:id     controllers.ExamInscriptionController.getAllExamStudent(id: String)
 GET     /getExams/:id           controllers.ExamInscriptionController.getAllExam(id: String)
+#get all examsInscription by course
+GET     /getExamInscriptionByCourse/:id      controllers.ExamInscriptionController.getAllExamInscriptionByCourse(id: String)
 
 POST     /exam/enroll/:id          controllers.ExamInscriptionController.saveExamInscription(id: String)
 

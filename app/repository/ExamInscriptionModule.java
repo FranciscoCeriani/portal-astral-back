@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.ebean.DuplicateKeyException;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
+import models.Course;
 import models.Exam;
 import models.Student;
 import play.db.ebean.EbeanConfig;
@@ -57,7 +58,7 @@ public class ExamInscriptionModule implements IModule<ExamInscription> {
         return supplyAsync(() -> {
             try {
                 final Optional<ExamInscription> examInscription = Optional.ofNullable(ebeanServer.find(ExamInscription.class, id));
-                if (examInscription.isPresent()){
+                if (examInscription.isPresent()) {
                     ebeanServer.delete(examInscription.get());
                     return Optional.of(true);
                 } else {
@@ -116,7 +117,7 @@ public class ExamInscriptionModule implements IModule<ExamInscription> {
         }, executionContext);
     }
 
-//    Devuelve todos los ExamInscription pertenecientes a Student
+    //    Devuelve todos los ExamInscription pertenecientes a Student
     public CompletionStage<List<ExamInscription>> getAllExamStudent(String idStudent) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
@@ -133,7 +134,7 @@ public class ExamInscriptionModule implements IModule<ExamInscription> {
         }, executionContext);
     }
 
-//    Devuelve todos los ExamInscription pertenecientes a Exam
+    //    Devuelve todos los ExamInscription pertenecientes a Exam
     public CompletionStage<List<ExamInscription>> getAllExam(String idExam) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
@@ -150,7 +151,24 @@ public class ExamInscriptionModule implements IModule<ExamInscription> {
         }, executionContext);
     }
 
-//    Devuelve todos los ExamInscription pertenecientes a Student y Exam
+    //    Devuelve todos los ExamInscription pertenecientes a un Course
+    public CompletionStage<List<ExamInscription>> getAllExamCourse(String idCourse) {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            List<ExamInscription> result = new ArrayList<>();
+            try {
+                Course course = ebeanServer.find(Course.class).setId(idCourse).findOne();
+                if (course != null) {
+                    result = getExamsIns(course);
+                }
+            } finally {
+                txn.end();
+            }
+            return result;
+        }, executionContext);
+    }
+
+    //    Devuelve todos los ExamInscription pertenecientes a Student y Exam
     public CompletionStage<Optional<ExamInscription>> getExamIns(String idStudent, String idExam) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
@@ -176,7 +194,7 @@ public class ExamInscriptionModule implements IModule<ExamInscription> {
         }, executionContext);
     }
 
-//    Devuelve todos los ExamInscription pertenecientes a Student
+    //    Devuelve todos los ExamInscription pertenecientes a Student
     private List<ExamInscription> getExamsIns(Student student) {
         Transaction txn = ebeanServer.beginTransaction();
         try {
@@ -197,7 +215,7 @@ public class ExamInscriptionModule implements IModule<ExamInscription> {
         }
     }
 
-//    Devuelve todos los ExamInscription pertenecientes a Exam
+    //    Devuelve todos los ExamInscription pertenecientes a Exam
     private List<ExamInscription> getExamsIns(Exam exam) {
         Transaction txn = ebeanServer.beginTransaction();
         try {
@@ -206,6 +224,27 @@ public class ExamInscriptionModule implements IModule<ExamInscription> {
                 List<ExamInscription> result = new ArrayList<>();
                 for (ExamInscription i : allExams) {
                     if (i.exam.equals(exam)) {
+                        result.add(i);
+                    }
+                }
+                return result;
+            } else {
+                return new ArrayList<>();
+            }
+        } finally {
+            txn.end();
+        }
+    }
+
+    //    Devuelve todos los ExamInscription pertenecientes a un Course
+    private List<ExamInscription> getExamsIns(Course course) {
+        Transaction txn = ebeanServer.beginTransaction();
+        try {
+            List<ExamInscription> allExams = ebeanServer.find(ExamInscription.class).findList();
+            if (!allExams.isEmpty()) {
+                List<ExamInscription> result = new ArrayList<>();
+                for (ExamInscription i : allExams) {
+                    if (i.exam.course.equals(course)) {
                         result.add(i);
                     }
                 }

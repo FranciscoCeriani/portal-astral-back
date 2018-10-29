@@ -99,4 +99,12 @@ public class ExamInscriptionController extends Controller {
             return ok(Json.toJson(data));
         }, executionContext.current());
     }
+
+    //    Devuelve todos los ExamInscription pertenecientes a un Course
+    public CompletionStage<Result> getAllExamInscriptionByCourse(String id) {
+        return examInscriptionModule.getAllExamCourse(id).thenApplyAsync(data -> {
+            // This is the HTTP rendering thread context
+            return ok(Json.toJson(data));
+        }, executionContext.current());
+    }
 }
