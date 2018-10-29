@@ -4,6 +4,7 @@ import io.ebean.DuplicateKeyException;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Transaction;
+import models.Course;
 import models.Exam;
 import org.springframework.beans.BeanUtils;
 import play.db.ebean.EbeanConfig;
@@ -12,6 +13,9 @@ import scala.util.Success;
 import scala.util.Try;
 
 import javax.inject.Inject;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -54,9 +58,9 @@ public class ExamModule implements IModule<Exam> {
     public CompletionStage<Optional<Boolean>> delete(String id) {
         return supplyAsync(() -> {
             try {
-                final Optional<Exam> computerOptional = Optional.ofNullable(ebeanServer.find(Exam.class).setId(id).findOne());
-                if(computerOptional.isPresent()){
-                    computerOptional.get().delete();
+                final Optional<Exam> examOptional = Optional.ofNullable(ebeanServer.find(Exam.class).setId(id).findOne());
+                if(examOptional.isPresent()){
+                    examOptional.get().delete();
                     return Optional.of(true);
                 }else{
                     return Optional.of(false);
@@ -71,6 +75,15 @@ public class ExamModule implements IModule<Exam> {
     public CompletionStage<Try<String>> insert(Exam exam) {
         return supplyAsync(() -> {
             try {
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                String today = df.format(new Date());
+                if (exam.date.compareTo(today) < 0) {
+                    return new Failure(new Exception("Date has already passed"));
+                }
+                Course savedCourse = ebeanServer.find(Course.class).setId(exam.course.id).findOne();
+                if (savedCourse != null) {
+                    exam.course = savedCourse;
+                } else return new Failure(new Exception("Course doesn't exist"));
                 exam.id = UUID.randomUUID().toString();
                 ebeanServer.insert(exam);
                 return new Success(exam.id);
