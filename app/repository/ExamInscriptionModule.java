@@ -1,5 +1,6 @@
 package repository;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.ebean.DuplicateKeyException;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
@@ -14,10 +15,7 @@ import scala.util.Success;
 import scala.util.Try;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -59,7 +57,7 @@ public class ExamInscriptionModule implements IModule<ExamInscription> {
         return supplyAsync(() -> {
             try {
                 final Optional<ExamInscription> examInscription = Optional.ofNullable(ebeanServer.find(ExamInscription.class, id));
-                if (examInscription.isPresent()) {
+                if (examInscription.isPresent()){
                     ebeanServer.delete(examInscription.get());
                     return Optional.of(true);
                 } else {
@@ -218,5 +216,31 @@ public class ExamInscriptionModule implements IModule<ExamInscription> {
         } finally {
             txn.end();
         }
+    public CompletionStage<Optional<List<String>>> enrollStudentsToExam(Iterator<JsonNode> studentIdsIterator, String examId) {
+        return supplyAsync(() -> {
+            Optional<List<String>> result = Optional.empty();
+            List<String> inscriptionIds = new ArrayList<>();
+            Exam exam = ebeanServer.find(Exam.class).setId(examId).findOne();
+            Student student;
+            ExamInscription examInscription;
+            if (exam != null) {
+                while (studentIdsIterator.hasNext()) {
+                    student = ebeanServer.find(Student.class).setId(studentIdsIterator.next().textValue()).findOne();
+                    if (student != null && !checkIfInscriptionExists(student, exam)) {
+                        examInscription = new ExamInscription(student, exam);
+                        insert(examInscription).thenApplyAsync(data -> inscriptionIds.add(data.get()));
+                    }
+                }
+            }
+            result = Optional.of(inscriptionIds);
+            return result;
+        }, executionContext);
+    }
+
+    private boolean checkIfInscriptionExists(Student student, Exam exam) {
+        ExamInscription examInscription = ebeanServer.find(ExamInscription.class)
+                .where().eq("student", student).eq("exam", exam)
+                .findOne();
+        return examInscription != null;
     }
 }

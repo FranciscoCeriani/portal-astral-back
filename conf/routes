@@ -58,6 +58,13 @@ PUT     /examIns/:id      controllers.ExamInscriptionController.updateExamInscri
 GET     /getExamStudent/:id     controllers.ExamInscriptionController.getAllExamStudent(id: String)
 GET     /getExams/:id           controllers.ExamInscriptionController.getAllExam(id: String)
 
+POST     /exam/enroll/:id          controllers.ExamInscriptionController.saveExamInscription(id: String)
+
+GET     /examInscription           controllers.ExamInscriptionController.getAllExamInscriptions
+GET     /examInscription/:id        controllers.ExamInscriptionController.getExamInscription(id: String)
+DELETE  /examInscription/:id        controllers.ExamInscriptionController.deleteExamInscription(id: String)
+PUT     /examInscription/:id      controllers.ExamInscriptionController.updateExamInscription(id: String)
+
 POST    /career            controllers.CareerController.saveCareer
 GET     /career            controllers.CareerController.getAllCareers
 GET     /career/:id        controllers.CareerController.getCareer(id :String)

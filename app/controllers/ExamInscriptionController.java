@@ -24,14 +24,14 @@ public class ExamInscriptionController extends Controller {
         this.examInscriptionModule = examInscriptionModule;
     }
 
-    public CompletionStage<Result> saveExamInscription() {
+    public CompletionStage<Result> saveExamInscription(String id) {
         JsonNode json = request().body().asJson();
-        ExamInscription realExam = Json.fromJson(json, ExamInscription.class);
-        return examInscriptionModule.insert(realExam).thenApplyAsync(data -> {
-            if (data.isSuccess()) {
-                return status(201, data.get());
+        Iterator<JsonNode> studentsIdIterator = json.elements();
+        return examInscriptionModule.enrollStudentsToExam(studentsIdIterator, id).thenApplyAsync(data -> {
+            if (data.isPresent()) {
+                return status(200, Json.toJson(data.get()));
             } else {
-                return status(409, ((Failure) data).exception().getMessage());
+                return status(400, "No exam inscriptions created");
             }
         }, executionContext.current());
     }
@@ -68,10 +68,10 @@ public class ExamInscriptionController extends Controller {
     public CompletionStage<Result> getExamInscription(String id) {
         return examInscriptionModule.get(id).thenApplyAsync(data -> {
             // This is the HTTP rendering thread context
-            if (data.isPresent()) {
+            if(data.isPresent()){
                 ExamInscription examInscription = data.get();
                 return ok(Json.toJson(examInscription));
-            } else {
+            }else{
                 return status(404, "Resource not found");
             }
         }, executionContext.current());
@@ -79,22 +79,6 @@ public class ExamInscriptionController extends Controller {
 
     public CompletionStage<Result> getAllExamInscriptions() {
         return examInscriptionModule.getAll().thenApplyAsync(data -> {
-            // This is the HTTP rendering thread context
-            return ok(Json.toJson(data));
-        }, executionContext.current());
-    }
-
-    //    Devuelve todos los ExamInscription pertenecientes a Student
-    public CompletionStage<Result> getAllExamStudent(String id) {
-        return examInscriptionModule.getAllExamStudent(id).thenApplyAsync(data -> {
-            // This is the HTTP rendering thread context
-            return ok(Json.toJson(data));
-        }, executionContext.current());
-    }
-
-    //    Devuelve todos los ExamInscription pertenecientes a Exam
-    public CompletionStage<Result> getAllExam(String id) {
-        return examInscriptionModule.getAllExam(id).thenApplyAsync(data -> {
             // This is the HTTP rendering thread context
             return ok(Json.toJson(data));
         }, executionContext.current());
