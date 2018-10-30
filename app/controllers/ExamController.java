@@ -30,44 +30,41 @@ public class ExamController extends Controller {
     }
 
     /**
-     * Recieves a String courseID and a String date in the body of the request
-     * the String date needs to be in format YYYY-MM-DDTHH:MM to be parsed to JodaTime
-     * Then it checks if the courseID exists or not and creates a new Exam with those attributes
-     * Then it inserts it into the database
-     * @return 404 if the Course is not found, 409 if there was an error inserting into database and
-     * 201 if it was a success.
+     * Saves a new Exam for a given course at a given time.
+     *
+     * Receives a Json in the body of the request with two Strings, a courseID and a dateTime.
+     *
+     * courseID must be a valid course id
+     * dateTime must be in format YYYY-MM-ddTHH:mm:ss (ISO 8601)
+     *
+     * An example of a Json would be:
+     *
+     * {
+     *     "courseID": "8bc0beda-ac6d-4592-91a0-c303a97f42f8",
+     *     "dateTime": "2018-11-08T13:30:00"
+     * }
+     *
+     * Note that the method will still work if the dateTime is incomplete.
+     * For example, both "2018-11-08" and "2018-11-08T13:30" would work as expected.
+     *
+     * @return
+     * 409 if there are any errors.
+     * 201 if the exam was created successfully.
      */
     public CompletionStage<Result> saveExam() {
         JsonNode jsonNode = request().body().asJson();
-        Iterator<JsonNode> iterator = jsonNode.elements();
-        String courseID = iterator.next().get("id").toString().replace("\"","");
-        String date;
-        try{
-             date = iterator.next().textValue();
-        }
-        catch (IllegalFieldValueException e){
-             date = null;
-        }
-        Course course;
-        if(courseModule.get(courseID).toCompletableFuture().join().isPresent()){
-            course = courseModule.get(courseID).toCompletableFuture().join().get();
-        }
-        else {
-            course = null;
-        }
-        Exam exam = new Exam(course, date);
+        String courseID = jsonNode.get("courseID").textValue();
+        String dateTime = jsonNode.get("dateTime").textValue();
+
+        Course course = new Course();
+        course.id = courseID;
+
+        Exam exam = new Exam(course, dateTime);
         return examModule.insert(exam).thenApplyAsync(data -> {
-            if(exam.course == null){
-                return status(404, "Course not found");
-            }
-            if(exam.date ==null){
-                return status(400, "Invalid Date");
-            }
-            if(data.isSuccess()) {
+            if (data.isSuccess()) {
                 return status(201, data.get());
-            }
-            else {
-                return status(409, ((Failure)data).exception().getMessage());
+            } else {
+                return status(409, ((Failure) data).exception().getMessage());
             }
         }, executionContext.current());
     }
