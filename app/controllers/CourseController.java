@@ -155,4 +155,15 @@ public class CourseController extends Controller {
             }
         }, executionContext.current());
     }
+
+    public CompletionStage<Result> emptyListEnrolled(String id) {
+        return courseModule.emptyListEnrolled(id).thenApplyAsync(data -> {
+            if (data.isPresent()) {
+                if (data.get()) {
+                    return ok("Enrolled list updated");
+                }
+            }
+            return status(404, "Course to be updated not found");
+        }, executionContext.current());
+    }
 }

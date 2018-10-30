@@ -19,6 +19,7 @@ PUT     /course/:id      controllers.CourseController.updateCourse(id: String)
 
 POST    /course/:id/enroll       controllers.CourseController.enrollStudents(id: String)
 DELETE  /course/:id/remove     controllers.CourseController.removeStudents(id: String)
+DELETE  /course/:id/empty       controllers.CourseController.emptyListEnrolled(id: String)
 
 POST    /subject            controllers.SubjectController.saveSubject
 GET     /subject            controllers.SubjectController.getAllSubjects

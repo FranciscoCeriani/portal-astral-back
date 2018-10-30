@@ -206,4 +206,24 @@ public class CourseModule implements IModule<Course> {
             return value;
         }, executionContext);
     }
+
+    //    empty the list of students
+    public CompletionStage<Optional<Boolean>> emptyListEnrolled(String id) {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Optional<Boolean> value = Optional.of(false);
+            try {
+                Course savedCourse = ebeanServer.find(Course.class).setId(id).findOne();
+                if (savedCourse != null) {
+                    savedCourse.enrolled = new ArrayList<>();
+                    savedCourse.update();
+                    txn.commit();
+                    value = Optional.of(true);
+                }
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
+    }
 }
