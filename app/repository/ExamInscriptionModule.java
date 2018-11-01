@@ -126,7 +126,7 @@ public class ExamInscriptionModule implements IModule<ExamInscription> {
             if (exam != null) {
                 while (studentIdsIterator.hasNext()) {
                     student = ebeanServer.find(Student.class).setId(studentIdsIterator.next().textValue()).findOne();
-                    if (student != null && !checkIfInscriptionExists(student, exam)) {
+                    if (student != null && !checkIfInscriptionAlreadyExists(student, exam)) {
                         examInscription = new ExamInscription(student, exam);
                         insert(examInscription).thenApplyAsync(data -> inscriptionIds.add(data.get()));
                     }
@@ -137,7 +137,24 @@ public class ExamInscriptionModule implements IModule<ExamInscription> {
         }, executionContext);
     }
 
-    private boolean checkIfInscriptionExists(Student student, Exam exam) {
+    public CompletionStage<Optional<Boolean>> unenrollStudentFromExam(String studentId, String examId) {
+        return supplyAsync(() -> {
+            Student student = ebeanServer.find(Student.class).setId(studentId).findOne();
+            Exam exam = ebeanServer.find(Exam.class).setId(examId).findOne();
+            if (student != null && exam != null) {
+                ExamInscription examInscription = ebeanServer.find(ExamInscription.class)
+                        .where().eq("student", student).eq("exam", exam)
+                        .findOne();
+                if (examInscription != null) {
+                    ebeanServer.delete(examInscription);
+                    return Optional.of(true);
+                }
+            }
+            return Optional.of(false);
+        }, executionContext);
+    }
+
+    private boolean checkIfInscriptionAlreadyExists(Student student, Exam exam) {
         ExamInscription examInscription = ebeanServer.find(ExamInscription.class)
                 .where().eq("student", student).eq("exam", exam)
                 .findOne();
