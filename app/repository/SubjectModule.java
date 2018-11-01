@@ -146,7 +146,6 @@ public class SubjectModule implements IModule<Subject> {
             try {
                 Subject subject = ebeanServer.find(Subject.class).setId(subjectID).findOne();
                 if (subject != null) {
-                    subject.students.add(student);
                     update(subjectID, subject);
                     value = Optional.of(subject);
                 }

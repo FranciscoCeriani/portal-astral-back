@@ -92,6 +92,23 @@ public class CourseController extends Controller {
      * The request's body must be a Json whose attributes are the ids of the students being enrolled.
      * The names of the Json attributes are irrelevant, although its values must be valid student ids.
      *
+     * Json Examples:
+     *
+     * {
+     *     "id": "80eaad59-82f3-4002-a072-ed2f72f21a96"
+     * }
+     *
+     * {
+     *     "id1": "80eaad59-82f3-4002-a072-ed2f72f21a96",
+     *     "id2": "234bdb14-4df7-4095-b09d-40c5b10717c6",
+     *     "id3": "30019b49-4aa8-4123-92dc-5235db9c91d2"
+     * }
+     *
+     * {
+     *     "second_id": "30019b49-4aa8-4123-92dc-5235db9c91d2",
+     *     "first_id": "234bdb14-4df7-4095-b09d-40c5b10717c6"
+     * }
+     *
      * @param id The course's id.
      * @return
      *
@@ -126,6 +143,23 @@ public class CourseController extends Controller {
      *
      * The request's body must be a Json whose attributes are the ids of the students being enrolled.
      * The names of the Json attributes are irrelevant, although its values must be valid student ids.
+     *
+     * Json Examples:
+     *
+     * {
+     *     "id": "80eaad59-82f3-4002-a072-ed2f72f21a96"
+     * }
+     *
+     * {
+     *     "id1": "80eaad59-82f3-4002-a072-ed2f72f21a96",
+     *     "id2": "234bdb14-4df7-4095-b09d-40c5b10717c6",
+     *     "id3": "30019b49-4aa8-4123-92dc-5235db9c91d2"
+     * }
+     *
+     * {
+     *     "second_id": "30019b49-4aa8-4123-92dc-5235db9c91d2",
+     *     "first_id": "234bdb14-4df7-4095-b09d-40c5b10717c6"
+     * }
      *
      * @param id The course's id.
      * @return

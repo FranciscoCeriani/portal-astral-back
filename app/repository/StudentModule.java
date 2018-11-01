@@ -4,6 +4,7 @@ import io.ebean.DuplicateKeyException;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Transaction;
+import models.Course;
 import models.Student;
 import org.springframework.beans.BeanUtils;
 import play.db.ebean.EbeanConfig;
@@ -106,6 +107,27 @@ public class StudentModule implements IModule<Student> {
 
                 List<Student> studentList = ebeanServer.find(Student.class).findList();
                 value = studentList;
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
+    }
+
+    /**
+     * Gets the list of courses to which a student is enrolled.
+     * @param id The student's id
+     * @return An Optional with a list
+     */
+    public CompletionStage<Optional<List<Course>>> getCourses(String id) {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Optional<List<Course>> value = Optional.empty();
+            try {
+                Student savedStudent = ebeanServer.find(Student.class).setId(id).findOne();
+                if (savedStudent != null) {
+                    value = Optional.of(savedStudent.courses);
+                }
             } finally {
                 txn.end();
             }
