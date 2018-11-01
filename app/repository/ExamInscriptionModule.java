@@ -281,6 +281,14 @@ public class ExamInscriptionModule implements IModule<ExamInscription> {
         }
     }
 
+    /**
+     * Enrolls students into an exam by creating ExamInscriptions.
+     *
+     * @param studentIdsIterator An iterator with the ids of all the students to be enrolled into the exam.
+     * @param examId The exam's id.
+     * @return An optional with a list of Strings (ids from all created ExamInscrptions).
+     * An empty optional if every enrollment failed (if this happens, no ExamInscriptions are created).
+     */
     public CompletionStage<Optional<List<String>>> enrollStudentsToExam(Iterator<JsonNode> studentIdsIterator, String examId) {
         return supplyAsync(() -> {
             Optional<List<String>> result = Optional.empty();
@@ -302,6 +310,13 @@ public class ExamInscriptionModule implements IModule<ExamInscription> {
         }, executionContext);
     }
 
+    /**
+     * Unenrolls a student from an exam by deleting the ExamInscription.
+     *
+     * @param studentId Id from the student to unenroll.
+     * @param examId The exam's id.
+     * @return An optional with a Boolean (True if the unenrollment was successful, False if not).
+     */
     public CompletionStage<Optional<Boolean>> unenrollStudentFromExam(String studentId, String examId) {
         return supplyAsync(() -> {
             Student student = ebeanServer.find(Student.class).setId(studentId).findOne();
@@ -319,6 +334,13 @@ public class ExamInscriptionModule implements IModule<ExamInscription> {
         }, executionContext);
     }
 
+    /**
+     * Checks if the student is already enrolled into the exam.
+     *
+     * @param student Student to check.
+     * @param exam Exam to check.
+     * @return A boolean. (True if the student is already enrolled to that exam, False if not).
+     */
     private boolean checkIfInscriptionAlreadyExists(Student student, Exam exam) {
         ExamInscription examInscription = ebeanServer.find(ExamInscription.class)
                 .where().eq("student", student).eq("exam", exam)
