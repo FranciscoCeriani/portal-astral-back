@@ -13,6 +13,8 @@ import scala.util.Success;
 import scala.util.Try;
 
 import javax.inject.Inject;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,6 +37,10 @@ public class StudentModule implements IModule<Student> {
     public CompletionStage<Try<String>> insert(Student entity) {
         return supplyAsync(() -> {
             try {
+                String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+                if (entity.birthday.compareTo(today) > 0) {
+                    return new Failure(new Exception("Invalid birth date"));
+                }
                 entity.id = UUID.randomUUID().toString();
                 ebeanServer.insert(entity);
                 return new Success(entity.id);
