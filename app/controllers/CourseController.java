@@ -33,7 +33,7 @@ public class CourseController extends Controller {
             if (data.isSuccess()) {
                 return status(201, data.get());
             } else {
-                return status(409, ((Failure) data).exception().getMessage());
+                return status(400, ((Failure) data).exception().getMessage());
             }
         }, executionContext.current());
     }
