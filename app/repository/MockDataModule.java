@@ -4,6 +4,7 @@ import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Transaction;
 import models.*;
+import org.joda.time.DateTime;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
@@ -74,6 +75,18 @@ public class MockDataModule {
             Course course3 = new Course("2/3/2018", "4/7/2018", subject3, new ArrayList<>());
             course3.id = UUID.randomUUID().toString();
 
+            DictationHours dictationHours1 = new DictationHours("Lunes", DateTime.now(), DateTime.now());
+            dictationHours1.id = UUID.randomUUID().toString();
+            DictationHours dictationHours2 = new DictationHours("Viernes", DateTime.now(), DateTime.now());
+            dictationHours2.id = UUID.randomUUID().toString();
+
+            course1.schedule.add(dictationHours1);
+            course1.schedule.add(dictationHours2);
+            course2.schedule.add(dictationHours1);
+            course2.schedule.add(dictationHours2);
+            course3.schedule.add(dictationHours1);
+            course3.schedule.add(dictationHours2);
+
             Exam exam1 = new Exam(course1, "4/5/2018");
             exam1.id = UUID.randomUUID().toString();
             Exam exam2 = new Exam(course2, "8/5/2018");
@@ -114,6 +127,8 @@ public class MockDataModule {
                 ebeanServer.insert(subject5);
                 ebeanServer.insert(subject6);
                 ebeanServer.insert(career);
+                ebeanServer.insert(dictationHours1);
+                ebeanServer.insert(dictationHours2);
                 ebeanServer.insert(course1);
                 ebeanServer.insert(course2);
                 ebeanServer.insert(course3);

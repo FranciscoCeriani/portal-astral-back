@@ -6,6 +6,7 @@ import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Transaction;
 import models.Course;
+import models.DictationHours;
 import models.Student;
 import models.Subject;
 import org.springframework.beans.BeanUtils;
@@ -228,5 +229,16 @@ public class CourseModule implements IModule<Course> {
             txn.end();
         }
         return value;
+    }
+
+    public void insertDictationHours(DictationHours entity) {
+        Transaction txn = ebeanServer.beginTransaction();
+        try {
+            entity.id = UUID.randomUUID().toString();
+            ebeanServer.insert(entity);
+            txn.commit();
+        } finally {
+            txn.end();
+        }
     }
 }
