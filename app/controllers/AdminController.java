@@ -55,7 +55,15 @@ public class AdminController extends Controller {
     }
 
     public CompletionStage<Result> deleteAdmin(String id){
+
+        if(adminModule.getAll().toCompletableFuture().join().size() ==1){
+            return adminModule.get(id).thenApplyAsync(data -> {
+                return status(403 , "Can't delete last administrator");
+            }, executionContext.current());
+        }
+
         return adminModule.delete(id).thenApplyAsync(data -> {
+
             if(data.isPresent()){
                 if(data.get()){
                     return status(200, "Deleted Correctly");
