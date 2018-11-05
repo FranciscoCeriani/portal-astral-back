@@ -36,8 +36,7 @@ public class SubjectTest {
     @Test
     public void insertTest() throws Exception {
         ArrayList<String> requiredSubjects = new ArrayList<>();
-        ArrayList<Student> students = new ArrayList<>();
-        Subject subject = new Subject("lab2", 3, requiredSubjects, students);
+        Subject subject = new Subject("lab2", 3, requiredSubjects);
 
         Result result = insertSubject(subject);
         assertEquals(201, result.status());
@@ -63,7 +62,7 @@ public class SubjectTest {
 
         requiredSubjects.remove(0);
         requiredSubjects.add(id);
-        Subject subject2 = new Subject("analisis", 1, requiredSubjects, students);
+        Subject subject2 = new Subject("analisis", 1, requiredSubjects);
         result = insertSubject(subject2);
         assertEquals(201, result.status());
 
@@ -78,8 +77,7 @@ public class SubjectTest {
     @Test
     public void deleteTest() throws Exception {
         ArrayList<String> requiredSubjects = new ArrayList<>();
-        ArrayList<Student> students = new ArrayList<>();
-        Subject subject = new Subject("lab2", 3, requiredSubjects, students);
+        Subject subject = new Subject("lab2", 3, requiredSubjects);
 
         Result result = insertSubject(subject);
         String id = contentAsString(result);
