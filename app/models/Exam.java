@@ -1,10 +1,11 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.joda.time.DateTime;
 import play.data.validation.Constraints;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Exam extends BaseModel {
@@ -14,6 +15,10 @@ public class Exam extends BaseModel {
 
     @Constraints.Required
     public String date;
+
+    @JsonIgnore
+    @OneToMany(cascade=CascadeType.ALL)
+    public List<ExamInscription> inscriptions;
 
     public Exam() {
         course= new Course();

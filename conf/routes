@@ -60,10 +60,10 @@ GET     /getExamInscriptionByExam/:id           controllers.ExamInscriptionContr
 GET     /getExamInscriptionByCourse/:id      controllers.ExamInscriptionController.getAllExamInscriptionByCourse(id: String)
 
 POST     /exam/enroll/:id          controllers.ExamInscriptionController.saveExamInscription(id: String)
+DELETE   /exam/unenroll/:id          controllers.ExamInscriptionController.deleteExamInscription(id: String)
 
 GET     /examInscription           controllers.ExamInscriptionController.getAllExamInscriptions
 GET     /examInscription/:id        controllers.ExamInscriptionController.getExamInscription(id: String)
-DELETE  /examInscription/:id        controllers.ExamInscriptionController.deleteExamInscription(id: String)
 PUT     /examInscription/:id      controllers.ExamInscriptionController.updateExamInscription(id: String)
 PUT     /examInscriptionAddResult/:id   controllers.ExamInscriptionController.addResult(id: String)
 

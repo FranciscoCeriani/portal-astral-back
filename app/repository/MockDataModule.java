@@ -31,21 +31,21 @@ public class MockDataModule {
             admin.id = UUID.randomUUID().toString();
             Professor professor = new Professor("Pablo", "Clavito", "file", "profe@profe.com", "profe");
             professor.id = UUID.randomUUID().toString();
-            Student student = new Student("Esteban", "Quito", "file", "student@student.com", "student", "08/02/1998", "Crack", "Crack de Cracks", "Al fondo a la derecha");
+            Student student = new Student("Esteban", "Quito", "file", "student@student.com", "student", "1998-02-08", "Crack", "Crack de Cracks", "Al fondo a la derecha");
             student.id = UUID.randomUUID().toString();
 
             Subject subject1 = new Subject("Física I", 1, new ArrayList<>());
             subject1.id = UUID.randomUUID().toString();
             Subject subject2 = new Subject("Análisis I", 1, new ArrayList<>());
             subject2.id = UUID.randomUUID().toString();
-            Subject subject3 = new Subject("Progeamación I", 1, new ArrayList<>());
+            Subject subject3 = new Subject("Programación I", 1, new ArrayList<>());
             subject3.id = UUID.randomUUID().toString();
 
             Subject subject4 = new Subject("Física II", 2, new ArrayList<>());
             subject4.id = UUID.randomUUID().toString();
             Subject subject5 = new Subject("Análisis II", 1, new ArrayList<>());
             subject5.id = UUID.randomUUID().toString();
-            Subject subject6 = new Subject("Progeamación II", 2, new ArrayList<>());
+            Subject subject6 = new Subject("Programación II", 2, new ArrayList<>());
             subject6.id = UUID.randomUUID().toString();
 
             subject4.requiredSubjects.add(subject1.id);
@@ -68,11 +68,11 @@ public class MockDataModule {
             career.careerSubjects.add(subject6.id);
             career.students.add(student);
 
-            Course course1 = new Course("2/3/2018", "4/7/2018", subject1, new ArrayList<>());
+            Course course1 = new Course("2018-02-03", "2018-07-04", subject1, new ArrayList<>());
             course1.id = UUID.randomUUID().toString();
-            Course course2 = new Course("2/3/2018", "4/7/2018", subject2, new ArrayList<>());
+            Course course2 = new Course("2018-02-03", "2018-07-04", subject2, new ArrayList<>());
             course2.id = UUID.randomUUID().toString();
-            Course course3 = new Course("2/3/2018", "4/7/2018", subject3, new ArrayList<>());
+            Course course3 = new Course("2018-02-03", "2018-07-04", subject3, new ArrayList<>());
             course3.id = UUID.randomUUID().toString();
 
             DictationHours dictationHours1 = new DictationHours("Lunes", DateTime.now(), DateTime.now());
@@ -89,13 +89,13 @@ public class MockDataModule {
 
             Exam exam1 = new Exam(course1, "4/5/2018");
             exam1.id = UUID.randomUUID().toString();
-            Exam exam2 = new Exam(course2, "8/5/2018");
+            Exam exam2 = new Exam(course2, "2018-05-08");
             exam2.id = UUID.randomUUID().toString();
-            Exam exam3 = new Exam(course3, "16/5/2018");
+            Exam exam3 = new Exam(course3, "2018-05-16");
             exam3.id = UUID.randomUUID().toString();
-            Exam exam4 = new Exam(course1, "4/6/2018");
+            Exam exam4 = new Exam(course1, "2018-06-04");
             exam4.id = UUID.randomUUID().toString();
-            Exam exam5 = new Exam(course1, "4/7/2018");
+            Exam exam5 = new Exam(course1, "2018-07-04");
             exam5.id = UUID.randomUUID().toString();
 
             ExamInscription examInscription1 = new ExamInscription(student, exam1);
@@ -115,7 +115,7 @@ public class MockDataModule {
             examInscription5.result = 7;
 
             Transaction txn = ebeanServer.beginTransaction();
-            Optional<Boolean> result = Optional.of(false);
+            Optional<Boolean> result;
             try {
                 ebeanServer.insert(admin);
                 ebeanServer.insert(professor);
