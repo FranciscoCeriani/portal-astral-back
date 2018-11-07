@@ -15,6 +15,7 @@ import play.test.Helpers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
@@ -38,7 +39,7 @@ public class ExamTest {
     }
 
     @Test
-    public void insertExam() throws Exception {
+    public void insertTest() throws Exception {
         Subject subject = new Subject("Algebra", 1, new ArrayList<>());
         Course course = new Course("2019-04-21", "2020-03-22", subject, new ArrayList<>());
         Exam exam = new Exam(course, "date");
@@ -51,7 +52,7 @@ public class ExamTest {
         course.id = contentAsString(result2);
         assertEquals(201, result2.status());
 
-        Result result = insertExam(course.id, exam.date);
+        Result result = insertTest(course.id, exam.date);
         assertEquals(201, result.status());
 
         String examID = contentAsString(result);
@@ -62,7 +63,35 @@ public class ExamTest {
 
     }
 
-    private Result insertExam(String courseID, String dateTime) throws IOException {
+    @Test
+    public void deleteTest() throws Exception {
+        Subject subject = new Subject("Algebra", 1, new ArrayList<>());
+        Course course = new Course("2019-04-21", "2020-03-22", subject, new ArrayList<>());
+        Exam exam = new Exam(course, "date");
+
+        Result result3 = insertSubject(subject);
+        subject.id = contentAsString(result3);
+        assertEquals(201, result3.status());
+
+        Result result2 = insertCourse(course);
+        course.id = contentAsString(result2);
+        assertEquals(201, result2.status());
+
+        Result result = insertTest(course.id, exam.date);
+        String id = contentAsString(result);
+
+        result = deleteExam(id);
+        assertEquals(200, result.status());
+
+        result = getAllExams();
+        List<Exam> studentList = readValue(result, new TypeReference<List<Exam>>() {});
+        assertEquals(0, studentList.size());
+
+        result = deleteExam("fake-id");
+        assertEquals(404, result.status());
+    }
+
+    private Result insertTest(String courseID, String dateTime) throws IOException {
 
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree("{\"courseID\":\"" + courseID + "\",\"dateTime\":\"" + dateTime + "\"}");
@@ -100,7 +129,17 @@ public class ExamTest {
         return route(application, request);
     }
 
+    private Result deleteExam(String id) {
+        Http.RequestBuilder requestBuilder = Helpers.fakeRequest().method(DELETE).uri("/exam/" + id);
+        return route(application, requestBuilder);
+    }
+
     private <T> T readValue(Result result, TypeReference<T> valueTypeRef) throws Exception {
         return Json.mapper().readValue(contentAsString(result), valueTypeRef);
+    }
+
+    private Result getAllExams() {
+        Http.RequestBuilder requestBuilder = Helpers.fakeRequest().method(GET).uri("/exam");
+        return route(application, requestBuilder);
     }
 }
