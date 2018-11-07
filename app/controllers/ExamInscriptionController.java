@@ -28,7 +28,7 @@ public class ExamInscriptionController extends Controller {
         JsonNode json = request().body().asJson();
         Iterator<JsonNode> studentsIdIterator = json.elements();
         return examInscriptionModule.enrollStudentsToExam(studentsIdIterator, id).thenApplyAsync(data -> {
-            if (data.isPresent()) {
+            if (data.isPresent() && !data.get().isEmpty()) {
                 return status(200, Json.toJson(data.get()));
             } else {
                 return status(400, "No exam inscriptions created");

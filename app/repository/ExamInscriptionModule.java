@@ -286,7 +286,8 @@ public class ExamInscriptionModule implements IModule<ExamInscription> {
      *
      * @param studentIdsIterator An iterator with the ids of all the students to be enrolled into the exam.
      * @param examId The exam's id.
-     * @return An optional with a list of Strings (ids from all created ExamInscrptions).
+     * @return An optional with a list of Strings (ids from all created ExamInscrptions. If the ExamInscription for a
+     * student for this exam already existed, the id for that ExamInscription is also added to the list).
      * An empty optional if every enrollment failed (if this happens, no ExamInscriptions are created).
      */
     public CompletionStage<Optional<List<String>>> enrollStudentsToExam(Iterator<JsonNode> studentIdsIterator, String examId) {
@@ -299,11 +300,22 @@ public class ExamInscriptionModule implements IModule<ExamInscription> {
             if (exam != null) {
                 while (studentIdsIterator.hasNext()) {
                     student = ebeanServer.find(Student.class).setId(studentIdsIterator.next().textValue()).findOne();
-                    if (student != null && !checkIfInscriptionAlreadyExists(student, exam)) {
-                        examInscription = new ExamInscription(student, exam);
-                        insert(examInscription).thenApplyAsync(data -> inscriptionIds.add(data.get()));
+                    if (student != null) {
+                        if (!checkIfInscriptionAlreadyExists(student, exam)){
+                            examInscription = new ExamInscription(student, exam);
+                            examInscription.id = UUID.randomUUID().toString();
+                            ebeanServer.insert(examInscription);
+                            inscriptionIds.add(examInscription.id);
+                        } else {
+                            examInscription = ebeanServer.find(ExamInscription.class)
+                                    .where().eq("student", student).eq("exam", exam)
+                                    .findOne();
+                            inscriptionIds.add(examInscription.id);
+                        }
                     }
                 }
+            } else {
+                return result;
             }
             result = Optional.of(inscriptionIds);
             return result;
