@@ -32,7 +32,7 @@ public class CourseTest {
 
     @Test
     public void insertCourse() throws Exception {
-        Subject subject = new Subject("Algebra", 1, new ArrayList<>(), new ArrayList<>());
+        Subject subject = new Subject("Algebra", 1, new ArrayList<>());
         Course course = new Course("2018-04-21", "2018-03-22", subject, new ArrayList<>());
 
         Result result = insertCourse(course);
