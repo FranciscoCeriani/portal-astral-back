@@ -1,10 +1,6 @@
-import akka.stream.impl.JsonObjectParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.google.gson.JsonObject;
-import io.ebeaninternal.server.transaction.JdbcTransaction;
 import models.Course;
 import models.Exam;
 import models.Subject;
@@ -16,12 +12,9 @@ import play.libs.Json;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
-import scala.util.parsing.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
