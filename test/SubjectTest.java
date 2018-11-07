@@ -112,7 +112,7 @@ public class SubjectTest {
     }
 
     @Test
-    public void getAllSubjectsTest() throws Exception{
+    public void getSubjectsTest() throws Exception{
 
         ArrayList<String> requiredSubjects = new ArrayList<>();
         ArrayList<Student> students = new ArrayList<>();
@@ -151,6 +151,14 @@ public class SubjectTest {
         assertEquals(subjects.get(2).id, subject3Id);
         assertEquals(subjects.get(2).requiredSubjects.get(0), subject1Id);
         assertEquals(subjects.get(2).requiredSubjects.size(), 1);
+
+        //getSubject testing.
+        result =getSubject(subject3Id);
+        assertEquals(200, result.status());
+        Subject resultSubj = readValue(result, new TypeReference<Subject>(){});
+        assertEquals(resultSubj.id, subject3Id);
+        assertEquals(resultSubj.requiredSubjects.get(0), subject1Id);
+
     }
 
 
