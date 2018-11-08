@@ -36,8 +36,8 @@ public class CourseModule implements IModule<Course> {
     public CompletionStage<Try<String>> insert(Course entity) {
         return supplyAsync(() -> {
             try {
+                Subject subject = ebeanServer.find(Subject.class).setId(entity.subject.id).findOne();
                 if (entity.subject != null && entity.subject.id != null) {
-                    Subject subject = ebeanServer.find(Subject.class).setId(entity.subject.id).findOne();
                     if (subject == null) {
                         return new Failure(new Exception("The subject is not registered"));
                     }
@@ -51,6 +51,7 @@ public class CourseModule implements IModule<Course> {
                     return new Failure(new Exception("Start date has already passed"));
                 }
                 entity.id = UUID.randomUUID().toString();
+                entity.subject = subject;
                 ebeanServer.insert(entity);
                 return new Success(entity.id);
             } catch (DuplicateKeyException e) {
