@@ -87,6 +87,7 @@ public class CourseModule implements IModule<Course> {
             try {
                 final Optional<Course> course = Optional.ofNullable(ebeanServer.find(Course.class, id));
                 if (course.isPresent()){
+                    emptyEnrolled(id);
                     ebeanServer.delete(course.get());
                     return Optional.of(true);
                 } else {
@@ -206,5 +207,27 @@ public class CourseModule implements IModule<Course> {
             }
             return value;
         }, executionContext);
+    }
+
+    //    empty the list of students
+    public CompletionStage<Optional<Boolean>> emptyListEnrolled(String id) {
+        return supplyAsync(() -> Optional.of(emptyEnrolled(id)), executionContext);
+    }
+
+    private Boolean emptyEnrolled(String id) {
+        Transaction txn = ebeanServer.beginTransaction();
+        boolean value = false;
+        try {
+            Course savedCourse = ebeanServer.find(Course.class).setId(id).findOne();
+            if (savedCourse != null) {
+                savedCourse.enrolled = new ArrayList<>();
+                savedCourse.update();
+                txn.commit();
+                value = true;
+            }
+        } finally {
+            txn.end();
+        }
+        return value;
     }
 }
