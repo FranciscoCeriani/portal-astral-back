@@ -36,8 +36,8 @@ public class RequiredSubjectTest {
     @Test
     public void insertTest() throws Exception {
 
-        Subject subject = new Subject("matematica", 3 , new ArrayList<>(), new ArrayList<>());
-        Subject requiredSubject = new Subject("algebra", 3 , new ArrayList<>(), new ArrayList<>());
+        Subject subject = new Subject("matematica", 3 , new ArrayList<>());
+        Subject requiredSubject = new Subject("algebra", 3 , new ArrayList<>());
 
         Result result1 = insertSubject(subject);
         Result result2 = insertSubject(requiredSubject);
@@ -62,8 +62,8 @@ public class RequiredSubjectTest {
     @Test
     public void deleteTest() throws Exception {
 
-        Subject subject = new Subject("matematica", 3 , new ArrayList<>(), new ArrayList<>());
-        Subject requiredSubject = new Subject("algebra", 3 , new ArrayList<>(), new ArrayList<>());
+        Subject subject = new Subject("matematica", 3 , new ArrayList<>());
+        Subject requiredSubject = new Subject("algebra", 3 , new ArrayList<>());
 
         Result result1 = insertSubject(subject);
         Result result2 = insertSubject(requiredSubject);
