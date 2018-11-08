@@ -82,11 +82,12 @@ public class ExamController extends Controller {
 
     public CompletionStage<Result> updateExam(String id) {
         JsonNode jsonNode = request().body().asJson();
-        Iterator<JsonNode> iterator = jsonNode.elements();
-        String courseID = iterator.next().get("id").toString().replace("\"","");
+        JsonNode jsonNode1 = jsonNode.get("id");
+        String courseID = jsonNode1.asText();
         String date;
         try{
-            date = iterator.next().textValue();
+            JsonNode jsonNode2 = jsonNode.get("date");
+            date = jsonNode2.asText();
         }
         catch (IllegalFieldValueException e){
             date = null;
