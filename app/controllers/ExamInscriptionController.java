@@ -28,7 +28,7 @@ public class ExamInscriptionController extends Controller {
         JsonNode json = request().body().asJson();
         Iterator<JsonNode> studentsIdIterator = json.elements();
         return examInscriptionModule.enrollStudentsToExam(studentsIdIterator, id).thenApplyAsync(data -> {
-            if (data.isPresent()) {
+            if (data.isPresent() && !data.get().isEmpty()) {
                 return status(200, Json.toJson(data.get()));
             } else {
                 return status(400, "No exam inscriptions created");
@@ -49,19 +49,17 @@ public class ExamInscriptionController extends Controller {
         }, executionContext.current());
     }
 
-    public CompletionStage<Result> deleteExamInscription(String id) {
+    public CompletionStage<Result> deleteExamInscription(String examId) {
 
-        return examInscriptionModule.delete(id).thenApplyAsync(data -> {
-            // This is the HTTP rendering thread context
+        JsonNode jsonNode = request().body().asJson();
+        String studentId = jsonNode.get("studentId").asText();
+        return examInscriptionModule.unenrollStudentFromExam(studentId, examId).thenApplyAsync(data -> {
             if (data.isPresent()) {
                 if (data.get()) {
-                    return ok("ExamInscription deleted");
-                } else {
-                    return status(404, "Resource not found");
+                    return ok("Student unenrolled from exam");
                 }
-            } else {
-                return status(404, "Resource not found");
             }
+            return status(404, "ExamInscription not found");
         }, executionContext.current());
     }
 
