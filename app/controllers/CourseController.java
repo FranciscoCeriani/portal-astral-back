@@ -2,6 +2,10 @@ package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import models.Course;
+import models.DictationHours;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import play.libs.Json;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
@@ -13,6 +17,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletionStage;
 
 public class CourseController extends Controller {
@@ -29,6 +34,26 @@ public class CourseController extends Controller {
     public CompletionStage<Result> saveCourse() {
         JsonNode json = request().body().asJson();
         Course realCourse = Json.fromJson(json, Course.class);
+
+        JsonNode arrays = json.findValue("schedules");
+        Iterator<JsonNode> iterator = arrays.iterator();
+        List<DictationHours> schedule = new ArrayList<>();
+        while (iterator.hasNext()) {
+            String dateTime = iterator.next().asText();
+            DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
+
+            DateTime dT1 = formatter.parseDateTime(dateTime);
+            if (iterator.hasNext()) {
+                dateTime = iterator.next().asText();
+                DateTime dT2 = formatter.parseDateTime(dateTime);
+                DictationHours dictationHours = new DictationHours(dT1.dayOfWeek().getAsString(), dT1, dT2);
+                courseModule.insertDictationHours(dictationHours);
+                schedule.add(dictationHours);
+            } else {
+                return (CompletionStage<Result>) status(409, "Error Schedule");
+            }
+        }
+        realCourse.schedule = schedule;
         return courseModule.insert(realCourse).thenApplyAsync(data -> {
             if (data.isSuccess()) {
                 return status(201, data.get());
@@ -37,6 +62,8 @@ public class CourseController extends Controller {
             }
         }, executionContext.current());
     }
+//    DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
+//    DateTime dt = formatter.parseDateTime(string);
 
     public CompletionStage<Result> updateCourse(String id) {
         JsonNode jsonNode = request().body().asJson();
