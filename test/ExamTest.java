@@ -91,6 +91,33 @@ public class ExamTest {
         assertEquals(404, result.status());
     }
 
+    @Test
+    public void updateTest() throws Exception {
+        Subject subject = new Subject("Algebra", 1, new ArrayList<>());
+        Course course = new Course("2019-04-21", "2020-03-22", subject, new ArrayList<>());
+        Exam exam = new Exam(course, "date");
+
+        Result result3 = insertSubject(subject);
+        subject.id = contentAsString(result3);
+        assertEquals(201, result3.status());
+
+        Result result2 = insertCourse(course);
+        course.id = contentAsString(result2);
+        assertEquals(201, result2.status());
+
+        Result result = insertTest(course.id, exam.date);
+        String id = contentAsString(result);
+
+        result = updateTest(id, course.id, exam.date);
+        assertEquals(201, result.status());
+
+        result = updateTest("fake-id", course.id, exam.date);
+        assertEquals(404, result.status());
+
+        result = updateTest(id, "fake-id", exam.date);
+        assertEquals(404, result.status());
+    }
+
     private Result insertTest(String courseID, String dateTime) throws IOException {
 
         ObjectMapper objectMapper = new ObjectMapper();

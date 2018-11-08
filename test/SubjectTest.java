@@ -1,4 +1,5 @@
 import com.fasterxml.jackson.core.type.TypeReference;
+import junit.framework.Assert;
 import models.Student;
 import models.Subject;
 import org.junit.After;
@@ -108,6 +109,56 @@ public class SubjectTest {
         result = getAllSubjects();
         subjects = readValue(result, new TypeReference<List<Subject>>(){});
         assertEquals(0, subjects.size());
+    }
+
+    @Test
+    public void getSubjectsTest() throws Exception{
+
+        ArrayList<String> requiredSubjects = new ArrayList<>();
+        ArrayList<Student> students = new ArrayList<>();
+        Subject subject = new Subject("lab2", 3, requiredSubjects);
+        Subject subject2 = new Subject("lab3", 4, requiredSubjects);
+
+        Result result = getAllSubjects();
+        assertEquals(200, result.status());
+        List<Subject> subjects = readValue(result, new TypeReference<List<Subject>>(){});
+        assertTrue(subjects.isEmpty());
+
+        result = insertSubject(subject);
+        String subject1Id = contentAsString(result);
+
+        result = getAllSubjects();
+        assertEquals(200, result.status());
+        subjects = readValue(result, new TypeReference<List<Subject>>(){});
+        assertEquals(subjects.size(), 1);
+
+        result = insertSubject(subject2);
+        String subject2Id = contentAsString(result);
+
+        requiredSubjects.add(subject1Id);
+        Subject subject3 = new Subject("lab4", 5, requiredSubjects);
+
+        result = insertSubject(subject3);
+        String subject3Id = contentAsString(result);
+
+        result = getAllSubjects();
+        assertEquals(200, result.status());
+        subjects = readValue(result, new TypeReference<List<Subject>>(){});
+        assertEquals(subjects.size(), 3);
+
+        assertEquals(subjects.get(0).id, subject1Id);
+        assertEquals(subjects.get(1).id, subject2Id);
+        assertEquals(subjects.get(2).id, subject3Id);
+        assertEquals(subjects.get(2).requiredSubjects.get(0), subject1Id);
+        assertEquals(subjects.get(2).requiredSubjects.size(), 1);
+
+        //getSubject testing.
+        result =getSubject(subject3Id);
+        assertEquals(200, result.status());
+        Subject resultSubj = readValue(result, new TypeReference<Subject>(){});
+        assertEquals(resultSubj.id, subject3Id);
+        assertEquals(resultSubj.requiredSubjects.get(0), subject1Id);
+
     }
 
 
