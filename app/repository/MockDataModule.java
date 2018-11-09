@@ -68,12 +68,18 @@ public class MockDataModule {
             career.careerSubjects.add(subject6.id);
             career.students.add(student);
 
-            Course course1 = new Course("2018-02-03", "2018-07-04", subject1, new ArrayList<>());
+            Course course1 = new Course("2019-02-03", "2019-07-04", subject1, new ArrayList<>());
             course1.id = UUID.randomUUID().toString();
-            Course course2 = new Course("2018-02-03", "2018-07-04", subject2, new ArrayList<>());
+            Course course2 = new Course("2019-02-03", "2019-07-04", subject2, new ArrayList<>());
             course2.id = UUID.randomUUID().toString();
-            Course course3 = new Course("2018-02-03", "2018-07-04", subject3, new ArrayList<>());
+            Course course3 = new Course("2019-02-03", "2019-07-04", subject3, new ArrayList<>());
             course3.id = UUID.randomUUID().toString();
+            Course course4 = new Course("2018-11-20", "2018-12-20", subject4, new ArrayList<>());
+            course4.id = UUID.randomUUID().toString();
+            Course course5 = new Course("2018-11-21", "2018-12-21", subject5, new ArrayList<>());
+            course5.id = UUID.randomUUID().toString();
+            Course course6 = new Course("2018-11-22", "2018-12-22", subject6, new ArrayList<>());
+            course6.id = UUID.randomUUID().toString();
 
             DictationHours dictationHours1 = new DictationHours("Lunes", DateTime.now(), DateTime.now());
             dictationHours1.id = UUID.randomUUID().toString();
@@ -87,15 +93,15 @@ public class MockDataModule {
             course3.schedule.add(dictationHours1);
             course3.schedule.add(dictationHours2);
 
-            Exam exam1 = new Exam(course1, "2018-05-04");
+            Exam exam1 = new Exam(course1, "2019-05-04");
             exam1.id = UUID.randomUUID().toString();
-            Exam exam2 = new Exam(course2, "2018-05-08");
+            Exam exam2 = new Exam(course2, "2019-05-08");
             exam2.id = UUID.randomUUID().toString();
-            Exam exam3 = new Exam(course3, "2018-05-16");
+            Exam exam3 = new Exam(course3, "2019-05-16");
             exam3.id = UUID.randomUUID().toString();
-            Exam exam4 = new Exam(course1, "2018-06-04");
+            Exam exam4 = new Exam(course1, "2019-06-04");
             exam4.id = UUID.randomUUID().toString();
-            Exam exam5 = new Exam(course1, "2018-07-04");
+            Exam exam5 = new Exam(course1, "2019-07-04");
             exam5.id = UUID.randomUUID().toString();
 
             ExamInscription examInscription1 = new ExamInscription(student, exam1);
