@@ -87,7 +87,7 @@ public class MockDataModule {
             course3.schedule.add(dictationHours1);
             course3.schedule.add(dictationHours2);
 
-            Exam exam1 = new Exam(course1, "4/5/2018");
+            Exam exam1 = new Exam(course1, "2018-05-04");
             exam1.id = UUID.randomUUID().toString();
             Exam exam2 = new Exam(course2, "2018-05-08");
             exam2.id = UUID.randomUUID().toString();
