@@ -35,14 +35,17 @@ public class CourseTest {
     @Test
     public void insertCourse() throws Exception {
         Subject subject = new Subject("Algebra", 1, new ArrayList<>());
-        Course course = new Course("2018-04-21", "2018-03-22", subject, new ArrayList<>());
+        Course course = new Course("2018-04-21", "2018-03-22", subject);
+
+        Result resultSubj = insertSubject(subject);
+        course.subject.id = contentAsString(resultSubj);
 
         Result result = insertCourse(course);
         assertEquals(400, result.status()); // Fails because subject is not registered
 
-        Result result2 = insertSubject(subject);
-        subject.id = contentAsString(result2);
-        assertEquals(201, result2.status());
+//        Result result2 = insertSubject(subject);
+//        subject.id = contentAsString(result2);
+//        assertEquals(201, result2.status());
 
         result = insertCourse(course);
         assertEquals(400, result.status()); // Fails because course ends before it begins
@@ -66,10 +69,12 @@ public class CourseTest {
     @Test
     public void deleteTest() throws Exception {
         Subject subject = new Subject("Algebra", 1, new ArrayList<>());
-        Course course = new Course("2018-04-21", "2018-03-22", subject, new ArrayList<>());
+        Course course = new Course("2018-11-21", "2019-06-22", subject);
 
-        insertSubject(subject);
+        Result resultSubj = insertSubject(subject);
+        course.subject.id = contentAsString(resultSubj);
         Result result = insertCourse(course);
+//        System.out.println(contentAsString(result));
         String id = contentAsString(result);
 
         result = deleteCourse(id);
@@ -88,7 +93,10 @@ public class CourseTest {
     @Test
     public void updateTest() throws Exception {
         Subject subject = new Subject("Algebra", 1, new ArrayList<>());
-        Course course = new Course("2018-04-21", "2018-03-22", subject, new ArrayList<>());
+        Course course = new Course("2019-04-21", "2019-06-22", subject);
+
+        Result resultSubj = insertSubject(subject);
+        course.subject.id = contentAsString(resultSubj);
 
         insertSubject(subject);
         Result result = insertCourse(course);
@@ -110,7 +118,7 @@ public class CourseTest {
     @Test
     public void enrollStudentTest() throws Exception {
         Subject subject = new Subject("Physics", 1, new ArrayList<>());
-        Course course = new Course("2019-01-20", "2019-06-20", subject, new ArrayList<>());
+        Course course = new Course("2019-01-20", "2019-06-20", subject);
         Result result = insertSubject(subject);
         assertEquals(201, result.status());
         subject.id = contentAsString(result);
@@ -136,7 +144,7 @@ public class CourseTest {
     @Test
     public void removeStudentTest() throws Exception {
         Subject subject = new Subject("Programming", 1, new ArrayList<>());
-        Course course = new Course("2019-01-20", "2019-06-20", subject, new ArrayList<>());
+        Course course = new Course("2019-01-20", "2019-06-20", subject);
 
         Result result = insertSubject(subject);
         subject.id = contentAsString(result);

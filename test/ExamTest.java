@@ -41,7 +41,7 @@ public class ExamTest {
     @Test
     public void insertTest() throws Exception {
         Subject subject = new Subject("Algebra", 1, new ArrayList<>());
-        Course course = new Course("2019-04-21", "2020-03-22", subject, new ArrayList<>());
+        Course course = new Course("2019-04-21", "2020-03-22", subject);
         Exam exam = new Exam(course, "date");
 
         Result result3 = insertSubject(subject);
@@ -66,7 +66,7 @@ public class ExamTest {
     @Test
     public void deleteTest() throws Exception {
         Subject subject = new Subject("Algebra", 1, new ArrayList<>());
-        Course course = new Course("2019-04-21", "2020-03-22", subject, new ArrayList<>());
+        Course course = new Course("2019-04-21", "2020-03-22", subject);
         Exam exam = new Exam(course, "date");
 
         Result result3 = insertSubject(subject);
@@ -94,7 +94,7 @@ public class ExamTest {
     @Test
     public void updateTest() throws Exception {
         Subject subject = new Subject("Algebra", 1, new ArrayList<>());
-        Course course = new Course("2019-04-21", "2020-03-22", subject, new ArrayList<>());
+        Course course = new Course("2019-04-21", "2020-03-22", subject);
         Exam exam = new Exam(course, "date");
 
         Result result3 = insertSubject(subject);
