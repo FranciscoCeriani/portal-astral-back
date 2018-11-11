@@ -24,9 +24,6 @@ public class Course extends BaseModel {
     @ManyToOne
     public Subject subject;
 
-    @ManyToMany
-    public List<DictationHours> schedule;
-
     @JsonIgnore
     @ManyToMany
     public List<Student> enrolled;
@@ -35,15 +32,13 @@ public class Course extends BaseModel {
         this.startDate = "";
         this.endDate = "";
         this.subject = new Subject();
-        this.schedule = new ArrayList<>();
         this.enrolled = new ArrayList<>();
     }
 
-    public Course(String startTime, String endTime, Subject subject, List<DictationHours> schedule) {
+    public Course(String startTime, String endTime, Subject subject) {
         this.startDate = startTime;
         this.endDate = endTime;
         this.subject = subject;
-        this.schedule = schedule;
         this.enrolled = new ArrayList<>();
     }
 }

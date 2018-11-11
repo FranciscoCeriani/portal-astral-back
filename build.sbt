@@ -12,6 +12,7 @@ crossScalaVersions := Seq("2.11.12", "2.12.4")
 
 // Test Database
 libraryDependencies += "com.h2database" % "h2" % "1.4.197"
+libraryDependencies += "mysql" % "mysql-connector-java" % "6.0.4"
 
 // Testing libraries for dealing with CompletionStage...
 libraryDependencies += "org.assertj" % "assertj-core" % "3.6.2" % Test

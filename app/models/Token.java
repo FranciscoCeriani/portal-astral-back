@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 @Entity
 public class Token extends BaseModel {
 
-    private final String userId;
+    private String userId;
 
     private Timestamp validUntil;
 

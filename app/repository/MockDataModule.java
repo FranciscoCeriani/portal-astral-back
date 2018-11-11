@@ -68,17 +68,17 @@ public class MockDataModule {
             career.careerSubjects.add(subject6.id);
             career.students.add(student);
 
-            Course course1 = new Course("2019-02-03", "2019-07-04", subject1, new ArrayList<>());
+            Course course1 = new Course("2019-02-03", "2019-07-04", subject1);
             course1.id = UUID.randomUUID().toString();
-            Course course2 = new Course("2019-02-03", "2019-07-04", subject2, new ArrayList<>());
+            Course course2 = new Course("2019-02-03", "2019-07-04", subject2);
             course2.id = UUID.randomUUID().toString();
-            Course course3 = new Course("2019-02-03", "2019-07-04", subject3, new ArrayList<>());
+            Course course3 = new Course("2019-02-03", "2019-07-04", subject3);
             course3.id = UUID.randomUUID().toString();
-            Course course4 = new Course("2018-11-20", "2018-12-20", subject4, new ArrayList<>());
+            Course course4 = new Course("2018-11-20", "2018-12-20", subject4);
             course4.id = UUID.randomUUID().toString();
-            Course course5 = new Course("2018-11-21", "2018-12-21", subject5, new ArrayList<>());
+            Course course5 = new Course("2018-11-21", "2018-12-21", subject5);
             course5.id = UUID.randomUUID().toString();
-            Course course6 = new Course("2018-11-22", "2018-12-22", subject6, new ArrayList<>());
+            Course course6 = new Course("2018-11-22", "2018-12-22", subject6);
             course6.id = UUID.randomUUID().toString();
 
             DictationHours dictationHours1 = new DictationHours("Lunes", DateTime.now(), DateTime.now());
@@ -86,12 +86,12 @@ public class MockDataModule {
             DictationHours dictationHours2 = new DictationHours("Viernes", DateTime.now(), DateTime.now());
             dictationHours2.id = UUID.randomUUID().toString();
 
-            course1.schedule.add(dictationHours1);
-            course1.schedule.add(dictationHours2);
-            course2.schedule.add(dictationHours1);
-            course2.schedule.add(dictationHours2);
-            course3.schedule.add(dictationHours1);
-            course3.schedule.add(dictationHours2);
+//            course1.schedule.add(dictationHours1);
+//            course1.schedule.add(dictationHours2);
+//            course2.schedule.add(dictationHours1);
+//            course2.schedule.add(dictationHours2);
+//            course3.schedule.add(dictationHours1);
+//            course3.schedule.add(dictationHours2);
 
             Exam exam1 = new Exam(course1, "2019-05-04");
             exam1.id = UUID.randomUUID().toString();

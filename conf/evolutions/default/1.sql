@@ -17,7 +17,7 @@ create table admin (
 create table career (
   id                            varchar(255) not null,
   career_name                   varchar(255),
-  career_subjects               clob,
+  career_subjects               longtext,
   constraint pk_career primary key (id)
 );
 
@@ -29,12 +29,6 @@ create table course (
   constraint pk_course primary key (id)
 );
 
-create table course_dictation_hours (
-  course_id                     varchar(255) not null,
-  dictation_hours_id            varchar(255) not null,
-  constraint pk_course_dictation_hours primary key (course_id,dictation_hours_id)
-);
-
 create table course_student (
   course_id                     varchar(255) not null,
   student_id                    varchar(255) not null,
@@ -44,8 +38,8 @@ create table course_student (
 create table dictation_hours (
   id                            varchar(255) not null,
   day                           varchar(255),
-  start_time                    timestamp,
-  end_time                      timestamp,
+  start_time                    datetime(6),
+  end_time                      datetime(6),
   constraint pk_dictation_hours primary key (id)
 );
 
@@ -94,26 +88,20 @@ create table subject (
   id                            varchar(255) not null,
   subject_name                  varchar(255),
   career_year                   integer not null,
-  required_subjects             clob,
+  required_subjects             longtext,
   constraint pk_subject primary key (id)
 );
 
 create table token (
   id                            varchar(255) not null,
   user_id                       varchar(255),
-  valid_until                   timestamp,
+  valid_until                   datetime(6),
   lifespan                      integer not null,
   constraint pk_token primary key (id)
 );
 
 create index ix_course_subject_id on course (subject_id);
 alter table course add constraint fk_course_subject_id foreign key (subject_id) references subject (id) on delete restrict on update restrict;
-
-create index ix_course_dictation_hours_course on course_dictation_hours (course_id);
-alter table course_dictation_hours add constraint fk_course_dictation_hours_course foreign key (course_id) references course (id) on delete restrict on update restrict;
-
-create index ix_course_dictation_hours_dictation_hours on course_dictation_hours (dictation_hours_id);
-alter table course_dictation_hours add constraint fk_course_dictation_hours_dictation_hours foreign key (dictation_hours_id) references dictation_hours (id) on delete restrict on update restrict;
 
 create index ix_course_student_course on course_student (course_id);
 alter table course_student add constraint fk_course_student_course foreign key (course_id) references course (id) on delete restrict on update restrict;
@@ -133,37 +121,29 @@ alter table exam_inscription add constraint fk_exam_inscription_exam_id foreign 
 
 # --- !Downs
 
-alter table course drop constraint if exists fk_course_subject_id;
-drop index if exists ix_course_subject_id;
+alter table course drop foreign key fk_course_subject_id;
+drop index ix_course_subject_id on course;
 
-alter table course_dictation_hours drop constraint if exists fk_course_dictation_hours_course;
-drop index if exists ix_course_dictation_hours_course;
+alter table course_student drop foreign key fk_course_student_course;
+drop index ix_course_student_course on course_student;
 
-alter table course_dictation_hours drop constraint if exists fk_course_dictation_hours_dictation_hours;
-drop index if exists ix_course_dictation_hours_dictation_hours;
+alter table course_student drop foreign key fk_course_student_student;
+drop index ix_course_student_student on course_student;
 
-alter table course_student drop constraint if exists fk_course_student_course;
-drop index if exists ix_course_student_course;
+alter table exam drop foreign key fk_exam_course_id;
+drop index ix_exam_course_id on exam;
 
-alter table course_student drop constraint if exists fk_course_student_student;
-drop index if exists ix_course_student_student;
+alter table exam_inscription drop foreign key fk_exam_inscription_student_id;
+drop index ix_exam_inscription_student_id on exam_inscription;
 
-alter table exam drop constraint if exists fk_exam_course_id;
-drop index if exists ix_exam_course_id;
-
-alter table exam_inscription drop constraint if exists fk_exam_inscription_student_id;
-drop index if exists ix_exam_inscription_student_id;
-
-alter table exam_inscription drop constraint if exists fk_exam_inscription_exam_id;
-drop index if exists ix_exam_inscription_exam_id;
+alter table exam_inscription drop foreign key fk_exam_inscription_exam_id;
+drop index ix_exam_inscription_exam_id on exam_inscription;
 
 drop table if exists admin;
 
 drop table if exists career;
 
 drop table if exists course;
-
-drop table if exists course_dictation_hours;
 
 drop table if exists course_student;
 

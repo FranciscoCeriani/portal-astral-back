@@ -35,25 +35,25 @@ public class CourseController extends Controller {
         JsonNode json = request().body().asJson();
         Course realCourse = Json.fromJson(json, Course.class);
 
-        JsonNode arrays = json.findValue("schedules");
-        Iterator<JsonNode> iterator = arrays.iterator();
-        List<DictationHours> schedule = new ArrayList<>();
-        while (iterator.hasNext()) {
-            String dateTime = iterator.next().asText();
-            DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
+//        JsonNode arrays = json.findValue("schedules");
+//        Iterator<JsonNode> iterator = arrays.iterator();
+//        List<DictationHours> schedule = new ArrayList<>();
+//        while (iterator.hasNext()) {
+//            String dateTime = iterator.next().asText();
+//            DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
 
-            DateTime dT1 = formatter.parseDateTime(dateTime);
-            if (iterator.hasNext()) {
-                dateTime = iterator.next().asText();
-                DateTime dT2 = formatter.parseDateTime(dateTime);
-                DictationHours dictationHours = new DictationHours(dT1.dayOfWeek().getAsString(), dT1, dT2);
-                courseModule.insertDictationHours(dictationHours);
-                schedule.add(dictationHours);
-            } else {
-                return (CompletionStage<Result>) status(409, "Error Schedule");
-            }
-        }
-        realCourse.schedule = schedule;
+//            DateTime dT1 = formatter.parseDateTime(dateTime);
+//            if (iterator.hasNext()) {
+//                dateTime = iterator.next().asText();
+//                DateTime dT2 = formatter.parseDateTime(dateTime);
+//                DictationHours dictationHours = new DictationHours(dT1.dayOfWeek().getAsString(), dT1, dT2);
+//                courseModule.insertDictationHours(dictationHours);
+//                schedule.add(dictationHours);
+//            } else {
+//                return (CompletionStage<Result>) status(409, "Error Schedule");
+//            }
+//        }
+//        realCourse.schedule = schedule;
         return courseModule.insert(realCourse).thenApplyAsync(data -> {
             if (data.isSuccess()) {
                 return status(201, data.get());
