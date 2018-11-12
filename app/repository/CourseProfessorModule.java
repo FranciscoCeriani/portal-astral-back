@@ -21,7 +21,7 @@ import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
-public class CourseProfessorModule implements IModule<CourseProfessor> {
+public class CourseProfessorModule {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
@@ -32,16 +32,15 @@ public class CourseProfessorModule implements IModule<CourseProfessor> {
         this.executionContext = executionContext;
     }
 
-    @Override
-    public CompletionStage<Optional<Boolean>> update(String id, CourseProfessor entity) {
+    public CompletionStage<Optional<Boolean>> update(String id, String professorId) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             Optional<Boolean> value = Optional.of(false);
             try {
-                CourseProfessor savedCourseI = ebeanServer.find(CourseProfessor.class).setId(id).findOne();
+                CourseProfessor savedCourseI = ebeanServer.find(CourseProfessor.class).where().eq("course_id", id).findOne();
+                Professor professor = ebeanServer.find(Professor.class).where().eq("id", professorId).findOne();
                 if (savedCourseI != null) {
-                    entity.id = id;
-                    BeanUtils.copyProperties(entity, savedCourseI);
+                    savedCourseI.professor = professor;
                     savedCourseI.update();
                     txn.commit();
                     value = Optional.of(true);
@@ -53,7 +52,6 @@ public class CourseProfessorModule implements IModule<CourseProfessor> {
         }, executionContext);
     }
 
-    @Override
     public CompletionStage<Optional<Boolean>> delete(String id) {
         return supplyAsync(() -> {
             try {
@@ -70,7 +68,7 @@ public class CourseProfessorModule implements IModule<CourseProfessor> {
         }, executionContext);
     }
 
-    @Override
+
     public CompletionStage<Try<String>> insert(CourseProfessor entity) {
         return supplyAsync(() -> {
             try {
@@ -83,7 +81,6 @@ public class CourseProfessorModule implements IModule<CourseProfessor> {
         }, executionContext);
     }
 
-    @Override
     public CompletionStage<Optional<CourseProfessor>> get(String id) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
@@ -100,7 +97,6 @@ public class CourseProfessorModule implements IModule<CourseProfessor> {
         }, executionContext);
     }
 
-    @Override
     public CompletionStage<List<CourseProfessor>> getAll() {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();

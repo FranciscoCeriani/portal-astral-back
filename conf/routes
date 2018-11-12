@@ -22,11 +22,10 @@ DELETE  /course/:id/remove     controllers.CourseController.removeStudents(id: S
 DELETE  /course/:id/empty       controllers.CourseController.emptyListEnrolled(id: String)
 
 POST    /course/professor/:id            controllers.CourseProfessorController.saveCourseProfessor(id: String)
-GET     /course/professor/all            controllers.CourseProfessorController.getAllCourseProfessors
 GET     /course/professors/:courseId     controllers.CourseProfessorController.getAllCourseProfessors(courseId: String)
 GET     /professor/courses/:profId       controllers.CourseProfessorController.getAllProfessorCourses(profId: String)
 DELETE  /course/professor/:id            controllers.CourseProfessorController.deleteCourseProfessor(id: String)
-PUT     /course/professor/:id            controllers.CourseProfessorController.updateCourseProfessor(id: String)
+PUT     /course/professor/:courseId      controllers.CourseProfessorController.updateCourseProfessor(courseId: String)
 
 POST    /subject            controllers.SubjectController.saveSubject
 GET     /subject            controllers.SubjectController.getAllSubjects

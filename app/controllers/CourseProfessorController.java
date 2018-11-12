@@ -37,8 +37,8 @@ public class CourseProfessorController extends Controller {
 
     public CompletionStage<Result> updateCourseProfessor(String id) {
         JsonNode jsonNode = request().body().asJson();
-        CourseProfessor courseProfessor = Json.fromJson(jsonNode, CourseProfessor.class);
-        return courseProfessorModule.update(id, courseProfessor).thenApplyAsync(data -> {
+        String professorId = jsonNode.get("professorId").asText();
+        return courseProfessorModule.update(id, professorId).thenApplyAsync(data -> {
             if (data.isPresent()) {
                 if (data.get()) {
                     return ok("CourseProfessor updated");
