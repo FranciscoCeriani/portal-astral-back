@@ -1,11 +1,16 @@
 package models;
 
+import io.ebean.annotation.SoftDelete;
 import play.data.validation.Constraints;
 
 import javax.persistence.*;
+import javax.validation.Constraint;
 
 @MappedSuperclass
 public abstract class  User extends BaseModel{
+
+    @SoftDelete
+    boolean deleted;
 
     @Constraints.Required
     public String name;
