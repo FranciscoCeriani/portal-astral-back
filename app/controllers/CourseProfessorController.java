@@ -90,7 +90,7 @@ public class CourseProfessorController extends Controller {
     }
 
     //    Devuelve todos los CourseProfessor pertenecientes a Course
-    public CompletionStage<Result> getAllCourse(String id) {
+    public CompletionStage<Result> getAllCourseProfessors(String id) {
         return courseProfessorModule.getAllCourse(id).thenApplyAsync(data -> {
             // This is the HTTP rendering thread context
             return ok(Json.toJson(data));
