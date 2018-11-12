@@ -1,11 +1,9 @@
 package models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import java.util.Optional;
 
 @Entity
 public class ExamInscription extends BaseModel {

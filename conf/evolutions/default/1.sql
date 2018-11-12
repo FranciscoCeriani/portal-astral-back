@@ -10,6 +10,7 @@ create table admin (
   file                          varchar(255),
   email                         varchar(255),
   password                      varchar(255),
+  deleted                       tinyint(1) default 0 not null,
   constraint uq_admin_email unique (email),
   constraint pk_admin primary key (id)
 );
@@ -65,6 +66,7 @@ create table professor (
   file                          varchar(255),
   email                         varchar(255),
   password                      varchar(255),
+  deleted                       tinyint(1) default 0 not null,
   constraint uq_professor_email unique (email),
   constraint pk_professor primary key (id)
 );
@@ -80,6 +82,7 @@ create table student (
   identification_type           varchar(255),
   identification                varchar(255),
   address                       varchar(255),
+  deleted                       tinyint(1) default 0 not null,
   constraint uq_student_email unique (email),
   constraint pk_student primary key (id)
 );

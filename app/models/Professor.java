@@ -10,6 +10,10 @@ public class Professor extends User {
 
 
 
+    public Professor() {
+
+    }
+
     @JsonCreator
     public Professor(@JsonProperty("name") String name,
           @JsonProperty("lastName") String lastName,

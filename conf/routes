@@ -21,6 +21,12 @@ POST    /course/:id/enroll       controllers.CourseController.enrollStudents(id:
 DELETE  /course/:id/remove     controllers.CourseController.removeStudents(id: String)
 DELETE  /course/:id/empty       controllers.CourseController.emptyListEnrolled(id: String)
 
+POST    /course/professor/:id            controllers.CourseProfessorController.saveCourseProfessor
+GET     /course/professor/all            controllers.CourseProfessorController.getAllCourseProfessors
+GET     /course/professor/:id            controllers.CourseProfessorController.getCourseProfessor(id: String)
+DELETE  /course/professor/:id            controllers.CourseProfessorController.deleteCourseProfessor(id: String)
+PUT     /course/professor/:id            controllers.CourseProfessorController.updateCourseProfessor(id: String)
+
 POST    /subject            controllers.SubjectController.saveSubject
 GET     /subject            controllers.SubjectController.getAllSubjects
 GET     /subject/:id        controllers.SubjectController.getSubject(id :String)
@@ -41,7 +47,6 @@ GET    /professor          controllers.ProfessorController.getAllProfessors
 GET    /professor/:id         controllers.ProfessorController.getProfessor(id: String)
 DELETE  /professor/:id      controllers.ProfessorController.deleteProfessor(id: String)
 PUT     /professor/:id      controllers.ProfessorController.updateProfessor(id: String)
-
 
 POST     /exam           controllers.ExamController.saveExam
 GET     /exam           controllers.ExamController.getAllExams
