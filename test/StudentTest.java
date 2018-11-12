@@ -34,7 +34,7 @@ public class StudentTest {
 
     @Test
     public void insertTest() throws Exception {
-        Student student = new Student("name", "lastName", "file", "email", "password", "birthday", "identificationType", "identification", "address");
+        Student student = new Student("name", "lastName", "file", "email", "password","1999-05-11", "identificationType", "identification", "address");
 
         Result result = insertStudent(student);
         assertEquals(201, result.status());
@@ -58,7 +58,7 @@ public class StudentTest {
 
     @Test
     public void deleteTest() throws Exception {
-        Student student = new Student("name", "lastName", "file", "email", "password", "birthday", "identificationType", "identification", "address");
+        Student student = new Student("name", "lastName", "file", "email", "password", "1999-05-11", "identificationType", "identification", "address");
 
         Result result = insertStudent(student);
         String id = contentAsString(result);
@@ -77,7 +77,7 @@ public class StudentTest {
     @Test
     public void updateTest() throws Exception {
         Optional<String> optionalAddress = Optional.empty();
-        Student student = new Student("name", "lastName", "file", "email", "password", "birthday", "idType", "id", "address");
+        Student student = new Student("name", "lastName", "file", "email", "password", "1999-05-11", "idType", "id", "address");
         Result result = insertStudent(student);
         String id = contentAsString(result);
         Student newStudent = new Student("name2", "lastName2", "file", "email", "password", "birthday", "idType", "id", "address");

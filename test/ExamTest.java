@@ -123,6 +123,7 @@ public class ExamTest {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree("{\"courseID\":\"" + courseID + "\",\"dateTime\":\"" + dateTime + "\"}");
 
+
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(POST)
                 .uri("/exam")
@@ -133,7 +134,7 @@ public class ExamTest {
     private Result updateTest(String examID, String courseID, String dateTime) throws IOException {
 
         ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode = objectMapper.readTree("{\"id\":\"" + courseID + "\",\"date\":\"" + dateTime + "\"}");
+        JsonNode jsonNode = objectMapper.readTree("{\"courseID\":\"" + courseID + "\",\"dateTime\":\"" + dateTime + "\"}");
 
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(PUT)

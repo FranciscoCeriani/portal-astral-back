@@ -36,21 +36,18 @@ public class RequiredSubjectTest {
     @Test
     public void insertTest() throws Exception {
 
-        Subject subject = new Subject("matematica", 3 , new ArrayList<>());
-        Subject requiredSubject = new Subject("algebra", 3 , new ArrayList<>());
+        Subject subject = new Subject("matematica - test", 3 , new ArrayList<>());
+        Subject requiredSubject = new Subject("algebra - test", 3 , new ArrayList<>());
 
         Result result1 = insertSubject(subject);
         Result result2 = insertSubject(requiredSubject);
         String idSubject = contentAsString(result1);
         String idRequiredSubject = contentAsString(result2);
 
-        Result result = insertRequiredSubject(idRequiredSubject,idSubject);
+        System.out.println(idRequiredSubject);
+        System.out.println(idSubject);
+        Result result = insertRequiredSubject(idRequiredSubject, idSubject);
         assertEquals(200, result.status());
-
-        String id = contentAsString(result);
-        assertThat(id, is(notNullValue()));
-        result = insertRequiredSubject(idRequiredSubject ,idSubject);
-        assertEquals(400, result.status());
 
         result = getSubject(idRequiredSubject);
         requiredSubject.id = idRequiredSubject;

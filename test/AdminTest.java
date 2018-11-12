@@ -63,13 +63,21 @@ public class AdminTest {
         Result result = insertAdmin(admin);
         String id = contentAsString(result);
         result = deleteAdmin(id);
-        assertEquals(200, result.status());
-        result = getAllAdmins();
-        List<Admin> admins = readValue(result, new TypeReference<List<Admin>>(){});
-        assertEquals(0, admins.size());
+        assertEquals(403, result.status());
+
+        Admin admin2 = new Admin("name", "lastName", "file", "email@as.com", "password");
+        Result result2 = insertAdmin(admin2);
+        String id2 = contentAsString(result2);
 
         result = deleteAdmin("fake-id");
         assertEquals(404, result.status());
+
+        result2 = deleteAdmin(id2);
+        assertEquals(200, result2.status());
+
+        result = getAllAdmins();
+        List<Admin> admins = readValue(result, new TypeReference<List<Admin>>(){});
+        assertEquals(1, admins.size());
     }
 
     @Test

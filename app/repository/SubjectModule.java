@@ -163,7 +163,7 @@ public class SubjectModule implements IModule<Subject> {
             try {
                 Subject requiredSubject = ebeanServer.find(Subject.class).setId(requiredSubjectID).findOne();
                 Subject subject = ebeanServer.find(Subject.class).setId(subjectID).findOne();
-                if (subject != null && requiredSubject != null && !checkRequiredSubjects(requiredSubject)) {
+                if (subject != null && requiredSubject != null && checkRequiredSubjects(requiredSubject)) {
                     subject.addRequiredSubject(requiredSubjectID);
                     subject.update();
                     txn.commit();
