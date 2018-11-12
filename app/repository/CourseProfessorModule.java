@@ -131,10 +131,10 @@ public class CourseProfessorModule {
     }
 
     //    Devuelve todos los CourseProfessor pertenecientes a Course
-    public CompletionStage<List<CourseProfessor>> getAllCourse(String idCourse) {
+    public CompletionStage<List<Professor>> getAllCourse(String idCourse) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
-            List<CourseProfessor> result = new ArrayList<>();
+            List<Professor> result = new ArrayList<>();
             try {
                 Course course = ebeanServer.find(Course.class).setId(idCourse).findOne();
                 if (course != null) {
@@ -144,32 +144,6 @@ public class CourseProfessorModule {
                 txn.end();
             }
             return result;
-        }, executionContext);
-    }
-
-    //    Devuelve todos los CourseProfessor pertenecientes a Professor y Course
-    public CompletionStage<Optional<CourseProfessor>> getCourseIns(String idProfessor, String idCourse) {
-        return supplyAsync(() -> {
-            Transaction txn = ebeanServer.beginTransaction();
-            Optional<CourseProfessor> value = Optional.empty();
-            try {
-                Professor professor = ebeanServer.find(Professor.class).setId(idProfessor).findOne();
-                Course course = ebeanServer.find(Course.class).setId(idCourse).findOne();
-                if (professor != null && course != null) {
-                    List<CourseProfessor> allCourses = getCoursesIns(course);
-                    if (allCourses != null) {
-                        for (CourseProfessor i : allCourses) {
-                            if (i.professor.equals(professor) && i.course.equals(course)) {
-                                value = Optional.of(i);
-                                break;
-                            }
-                        }
-                    }
-                }
-            } finally {
-                txn.end();
-            }
-            return value;
         }, executionContext);
     }
 
@@ -195,15 +169,15 @@ public class CourseProfessorModule {
     }
 
     //    Devuelve todos los CourseProfessor pertenecientes a Course
-    private List<CourseProfessor> getCoursesIns(Course course) {
+    private List<Professor> getCoursesIns(Course course) {
         Transaction txn = ebeanServer.beginTransaction();
         try {
             List<CourseProfessor> allCourses = ebeanServer.find(CourseProfessor.class).findList();
             if (allCourses != null) {
-                List<CourseProfessor> result = new ArrayList<>();
+                List<Professor> result = new ArrayList<>();
                 for (CourseProfessor i : allCourses) {
                     if (i.course.equals(course)) {
-                        result.add(i);
+                        result.add(i.professor);
                     }
                 }
                 return result;
