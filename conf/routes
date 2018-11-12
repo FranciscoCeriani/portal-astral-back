@@ -21,7 +21,7 @@ POST    /course/:id/enroll       controllers.CourseController.enrollStudents(id:
 DELETE  /course/:id/remove     controllers.CourseController.removeStudents(id: String)
 DELETE  /course/:id/empty       controllers.CourseController.emptyListEnrolled(id: String)
 
-POST    /course/professor/:id            controllers.CourseProfessorController.saveCourseProfessor
+POST    /course/professor/:id            controllers.CourseProfessorController.saveCourseProfessor(id: String)
 GET     /course/professor/all            controllers.CourseProfessorController.getAllCourseProfessors
 GET     /course/professor/:id            controllers.CourseProfessorController.getCourseProfessor(id: String)
 DELETE  /course/professor/:id            controllers.CourseProfessorController.deleteCourseProfessor(id: String)

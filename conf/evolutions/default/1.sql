@@ -19,6 +19,7 @@ create table career (
   id                            varchar(255) not null,
   career_name                   varchar(255),
   career_subjects               longtext,
+  deleted                       tinyint(1) default 0 not null,
   constraint pk_career primary key (id)
 );
 
@@ -27,6 +28,7 @@ create table course (
   start_date                    varchar(255),
   end_date                      varchar(255),
   subject_id                    varchar(255),
+  deleted                       tinyint(1) default 0 not null,
   constraint pk_course primary key (id)
 );
 
@@ -36,11 +38,20 @@ create table course_student (
   constraint pk_course_student primary key (course_id,student_id)
 );
 
+create table course_professor (
+  id                            varchar(255) not null,
+  professor_id                  varchar(255),
+  course_id                     varchar(255),
+  deleted                       tinyint(1) default 0 not null,
+  constraint pk_course_professor primary key (id)
+);
+
 create table dictation_hours (
   id                            varchar(255) not null,
   day                           varchar(255),
   start_time                    datetime(6),
   end_time                      datetime(6),
+  deleted                       tinyint(1) default 0 not null,
   constraint pk_dictation_hours primary key (id)
 );
 
@@ -48,6 +59,7 @@ create table exam (
   id                            varchar(255) not null,
   course_id                     varchar(255),
   date                          varchar(255),
+  deleted                       tinyint(1) default 0 not null,
   constraint pk_exam primary key (id)
 );
 
@@ -56,6 +68,7 @@ create table exam_inscription (
   student_id                    varchar(255),
   exam_id                       varchar(255),
   result                        integer,
+  deleted                       tinyint(1) default 0 not null,
   constraint pk_exam_inscription primary key (id)
 );
 
@@ -92,6 +105,7 @@ create table subject (
   subject_name                  varchar(255),
   career_year                   integer not null,
   required_subjects             longtext,
+  deleted                       tinyint(1) default 0 not null,
   constraint pk_subject primary key (id)
 );
 
@@ -100,6 +114,7 @@ create table token (
   user_id                       varchar(255),
   valid_until                   datetime(6),
   lifespan                      integer not null,
+  deleted                       tinyint(1) default 0 not null,
   constraint pk_token primary key (id)
 );
 
@@ -111,6 +126,12 @@ alter table course_student add constraint fk_course_student_course foreign key (
 
 create index ix_course_student_student on course_student (student_id);
 alter table course_student add constraint fk_course_student_student foreign key (student_id) references student (id) on delete restrict on update restrict;
+
+create index ix_course_professor_professor_id on course_professor (professor_id);
+alter table course_professor add constraint fk_course_professor_professor_id foreign key (professor_id) references professor (id) on delete restrict on update restrict;
+
+create index ix_course_professor_course_id on course_professor (course_id);
+alter table course_professor add constraint fk_course_professor_course_id foreign key (course_id) references course (id) on delete restrict on update restrict;
 
 create index ix_exam_course_id on exam (course_id);
 alter table exam add constraint fk_exam_course_id foreign key (course_id) references course (id) on delete restrict on update restrict;
@@ -133,6 +154,12 @@ drop index ix_course_student_course on course_student;
 alter table course_student drop foreign key fk_course_student_student;
 drop index ix_course_student_student on course_student;
 
+alter table course_professor drop foreign key fk_course_professor_professor_id;
+drop index ix_course_professor_professor_id on course_professor;
+
+alter table course_professor drop foreign key fk_course_professor_course_id;
+drop index ix_course_professor_course_id on course_professor;
+
 alter table exam drop foreign key fk_exam_course_id;
 drop index ix_exam_course_id on exam;
 
@@ -149,6 +176,8 @@ drop table if exists career;
 drop table if exists course;
 
 drop table if exists course_student;
+
+drop table if exists course_professor;
 
 drop table if exists dictation_hours;
 
