@@ -9,9 +9,6 @@ import javax.validation.Constraint;
 @MappedSuperclass
 public abstract class  User extends BaseModel{
 
-    @SoftDelete
-    boolean deleted;
-
     @Constraints.Required
     public String name;
 
